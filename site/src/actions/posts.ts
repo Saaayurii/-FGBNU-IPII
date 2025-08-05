@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { Post, Category } from "@prisma/client";
+import { Category } from "@prisma/client";
 import { PostWithAuthor } from "@/types";
 import { revalidatePath } from "next/cache";
 
@@ -100,7 +100,7 @@ export async function incrementPostViews(id: string) {
 }
 
 async function generateUniqueSlug(title: string, excludeId?: string): Promise<string> {
-  let baseSlug = title
+  const baseSlug = title
     .toLowerCase()
     .replace(/[^a-z0-9\w\s-]/g, '')
     .replace(/[\s_-]+/g, '-')
@@ -176,7 +176,7 @@ export async function updatePost(id: string, data: {
   featured?: boolean;
 }) {
   try {
-    let updateData: any = { ...data };
+    const updateData: Record<string, unknown> = { ...data };
     
     // Update slug if title changed
     if (data.title) {

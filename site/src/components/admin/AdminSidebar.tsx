@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import { X } from 'lucide-react';
 import {
   LayoutDashboard,
   FileText,
@@ -13,7 +12,6 @@ import {
   Users,
   Settings,
   BarChart3,
-  Mail,
   UserPlus,
   Briefcase,
   Send

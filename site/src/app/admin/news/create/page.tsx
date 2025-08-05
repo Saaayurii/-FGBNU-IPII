@@ -12,7 +12,7 @@ export default function CreatePostPage() {
   const router = useRouter();
   const { data: session } = useSession();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Record<string, unknown>) => {
     if (!session?.user?.id) {
       toast.error('Необходимо войти в систему');
       return;

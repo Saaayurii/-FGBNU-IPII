@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Send, Calendar, Users, Eye, Edit, Trash2, Search, Filter, Mail, Clock, CheckCircle } from 'lucide-react';
+import { Plus, Send, Calendar, Users, Eye, Edit, Trash2, Search, Mail, Clock, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import {
@@ -351,7 +351,7 @@ export default function NewsletterPage() {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Удалить рассылку?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Это действие нельзя отменить. Рассылка "{newsletter.subject}" будет удалена навсегда.
+                            Это действие нельзя отменить. Рассылка &quot;{newsletter.subject}&quot; будет удалена навсегда.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>

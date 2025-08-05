@@ -357,7 +357,7 @@ export default function VacanciesPage() {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Удалить вакансию?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Это действие нельзя отменить. Вакансия "{vacancy.title}" будет удалена навсегда.
+                            Это действие нельзя отменить. Вакансия &quot;{vacancy.title}&quot; будет удалена навсегда.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>

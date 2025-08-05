@@ -1,6 +1,5 @@
 'use client';
 
-import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart3, Users, FileText, Eye, TrendingUp, Calendar } from 'lucide-react';
 

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { PostForm } from '@/components/admin/PostForm';
 import { getPostById, updatePost } from '@/actions/posts';
-import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -53,7 +52,7 @@ export default function EditPostPage() {
     }
   }, [postId]);
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Record<string, unknown>) => {
     setIsSaving(true);
     try {
       const result = await updatePost(postId, {

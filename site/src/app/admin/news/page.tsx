@@ -37,7 +37,6 @@ interface PostsData {
 }
 
 export default function NewsPage() {
-  const { data: session } = useSession();
   const [postsData, setPostsData] = useState<PostsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
