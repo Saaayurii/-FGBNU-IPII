@@ -1,0 +1,193 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+ provider = "postgresql"
+ url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String?
+  name      String?
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  posts Post[]
+  accounts Account[]
+  sessions Session[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Post {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String   @db.Text
+  content     String   @db.Text
+  imageUrl    String?
+  category    Category
+  published   Boolean  @default(false)
+  featured    Boolean  @default(false)
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime?
+
+  // Relations
+  author   User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorId String?
+
+  @@index([category])
+  @@index([published])
+  @@index([createdAt])
+  @@index([featured])
+  @@map("posts")
+}
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([active])
+  @@map("subscribers")
+}
+
+model SliderImage {
+  id        String   @id @default(cuid())
+  title     String?
+  imageUrl  String
+  link      String?
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@index([active])
+  @@map("slider_images")
+}
+
+model Vacancy {
+  id           String   @id @default(cuid())
+  title        String
+  description  String   @db.Text
+  requirements String   @db.Text
+  location     String
+  salary       String?
+  employment   String
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([createdAt])
+  @@map("vacancies")
+}
+
+model Newsletter {
+  id             String          @id @default(cuid())
+  subject        String
+  content        String          @db.Text
+  status         NewsletterStatus @default(DRAFT)
+  recipientsCount Int            @default(0)
+  sentAt         DateTime?
+  scheduledAt    DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("newsletters")
+}
+
+model NewsletterLog {
+  id          String   @id @default(cuid())
+  email       String
+  postId      String?
+  subject     String
+  status      EmailStatus @default(PENDING)
+  sentAt      DateTime?
+  errorMsg    String?
+  createdAt   DateTime @default(now())
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+  @@map("newsletter_logs")
+}
+
+// Enums
+enum Role {
+  USER
+  ADMIN
+  EDITOR
+}
+
+enum Category {
+  NEWS
+  VACANCY
+  ANNOUNCEMENT
+  EVENT
+}
+
+enum EmailStatus {
+  PENDING
+  SENT
+  FAILED
+  BOUNCED
+}
+
+enum NewsletterStatus {
+  DRAFT
+  SENT
+  SCHEDULED
+}

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" fill="none">
+  <!-- Background with rounded corners for iOS -->
+  <rect width="180" height="180" rx="40" fill="#1d4ed8"/>
+  
+  <!-- AI circuit pattern scaled up -->
+  <g fill="#ffffff" opacity="0.9">
+    <!-- Central processor -->
+    <rect x="72" y="72" width="36" height="36" rx="6" fill="#ffffff"/>
+    
+    <!-- Connection lines -->
+    <rect x="45" y="84" width="27" height="12" rx="6"/>
+    <rect x="108" y="84" width="27" height="12" rx="6"/>
+    <rect x="84" y="45" width="12" height="27" rx="6"/>
+    <rect x="84" y="108" width="12" height="27" rx="6"/>
+    
+    <!-- Corner nodes -->
+    <circle cx="54" cy="54" r="9"/>
+    <circle cx="126" cy="54" r="9"/>
+    <circle cx="54" cy="126" r="9"/>
+    <circle cx="126" cy="126" r="9"/>
+    
+    <!-- Diagonal connections -->
+    <path d="M63 63L72 72" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+    <path d="M117 63L108 72" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+    <path d="M63 117L72 108" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+    <path d="M117 117L108 108" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Russian letter "И" for ИПИИ -->
+  <text x="90" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#1d4ed8">И</text>
+</svg>
