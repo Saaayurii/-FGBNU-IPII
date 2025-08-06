@@ -7,22 +7,22 @@ export async function uploadImage(formData: FormData) {
     const file = formData.get('file') as File;
     
     if (!file) {
-      return { success: false, error: "$09; =5 =0945=" };
+      return { success: false, error: "Файл не найден" };
     }
 
-    // 0;840F8O D09;0
+    // Проверка файла на корректность
     await validateFile(file, 'images');
 
-    // 5=5@8@C5< 8<O D09;0
+    // Генерация уникального имени файла
     const fileName = await generateFileName(file.name);
 
-    // >;CG05< buffer D09;0
+    // Получение буфера из файла
     const arrayBuffer = await file.arrayBuffer();
 
-    // ?B8<878@C5< 87>1@065=85
+    // Оптимизация изображения
     const optimizedBuffer = await optimizeImage(arrayBuffer, 'images');
 
-    // !>E@0=O5< D09;
+    // Сохранение файла
     const filePath = await saveFile(optimizedBuffer, fileName, 'images');
 
     return {
@@ -36,10 +36,10 @@ export async function uploadImage(formData: FormData) {
       }
     };
   } catch (error) {
-    console.error("H81:0 703@C7:8 87>1@065=8O:", error);
+    console.error("Ошибка при загрузке изображения:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "H81:0 ?@8 703@C7:5 D09;0"
+      error: error instanceof Error ? error.message : "Неизвестная ошибка загрузки"
     };
   }
 }
@@ -49,22 +49,22 @@ export async function uploadSliderImage(formData: FormData) {
     const file = formData.get('file') as File;
     
     if (!file) {
-      return { success: false, error: "$09; =5 =0945=" };
+      return { success: false, error: "Файл не найден" };
     }
 
-    // 0;840F8O D09;0
+    // Проверка файла на корректность
     await validateFile(file, 'slider');
 
-    // 5=5@8@C5< 8<O D09;0
+    // Генерация уникального имени файла
     const fileName = await generateFileName(file.name);
 
-    // >;CG05< buffer D09;0
+    // Получение буфера из файла
     const arrayBuffer = await file.arrayBuffer();
 
-    // ?B8<878@C5< 87>1@065=85
+    // Оптимизация изображения
     const optimizedBuffer = await optimizeImage(arrayBuffer, 'slider');
 
-    // !>E@0=O5< D09;
+    // Сохранение файла
     const filePath = await saveFile(optimizedBuffer, fileName, 'slider');
 
     return {
@@ -78,10 +78,10 @@ export async function uploadSliderImage(formData: FormData) {
       }
     };
   } catch (error) {
-    console.error("H81:0 703@C7:8 87>1@065=8O 4;O A;0945@0:", error);
+    console.error("Ошибка при загрузке слайдера:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "H81:0 ?@8 703@C7:5 D09;0"
+      error: error instanceof Error ? error.message : "Неизвестная ошибка загрузки"
     };
   }
 }
@@ -93,13 +93,13 @@ export async function deleteUploadedFile(filePath: string) {
     if (deleted) {
       return { success: true };
     } else {
-      return { success: false, error: "5 C40;>AL C40;8BL D09;" };
+      return { success: false, error: "Не удалось удалить файл" };
     }
   } catch (error) {
-    console.error("H81:0 C40;5=8O D09;0:", error);
+    console.error("Ошибка удаления файла:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "H81:0 ?@8 C40;5=88 D09;0"
+      error: error instanceof Error ? error.message : "Неизвестная ошибка удаления"
     };
   }
 }
@@ -109,7 +109,7 @@ export async function uploadMultipleImages(formData: FormData) {
     const files = formData.getAll('files') as File[];
     
     if (!files || files.length === 0) {
-      return { success: false, error: "$09;K =5 =0945=K" };
+      return { success: false, error: "Файлы не найдены" };
     }
 
     const results = [];
@@ -117,19 +117,19 @@ export async function uploadMultipleImages(formData: FormData) {
 
     for (const file of files) {
       try {
-        // 0;840F8O D09;0
+        // Проверка файла
         await validateFile(file, 'images');
 
-        // 5=5@8@C5< 8<O D09;0
+        // Генерация имени
         const fileName = await generateFileName(file.name);
 
-        // >;CG05< buffer D09;0
+        // Получение буфера
         const arrayBuffer = await file.arrayBuffer();
 
-        // ?B8<878@C5< 87>1@065=85
+        // Оптимизация
         const optimizedBuffer = await optimizeImage(arrayBuffer, 'images');
 
-        // !>E@0=O5< D09;
+        // Сохранение
         const filePath = await saveFile(optimizedBuffer, fileName, 'images');
 
         results.push({
@@ -142,7 +142,7 @@ export async function uploadMultipleImages(formData: FormData) {
       } catch (fileError) {
         errors.push({
           fileName: file.name,
-          error: fileError instanceof Error ? fileError.message : "58725AB=0O >H81:0"
+          error: fileError instanceof Error ? fileError.message : "Неизвестная ошибка при загрузке файла"
         });
       }
     }
@@ -157,10 +157,10 @@ export async function uploadMultipleImages(formData: FormData) {
       }
     };
   } catch (error) {
-    console.error("H81:0 <0AA>2>9 703@C7:8 87>1@065=89:", error);
+    console.error("Ошибка при загрузке нескольких изображений:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "H81:0 ?@8 703@C7:5 D09;>2"
+      error: error instanceof Error ? error.message : "Неизвестная ошибка при загрузке нескольких файлов"
     };
   }
 }
