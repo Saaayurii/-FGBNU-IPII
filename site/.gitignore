@@ -13,9 +13,7 @@ out/
 build/
 dist/
 
-# Uploads (пока разрабатываете)
-public/uploads/*
-!public/uploads/.gitkeep
+
 
 # IDE
 .vscode/
