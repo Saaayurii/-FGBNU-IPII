@@ -6,7 +6,7 @@ import { News } from "@/components/News";
 import { Programs } from "@/components/Programs";
 import { Features } from "@/components/Features";
 import { ContactMap } from "@/components/ContactMap";
-import { Footer } from "@/components/layout/Footer";
+import { Footer } from "@/components/ui/Footer";
 
 interface MainPageProps {
   newsPosts: any[];

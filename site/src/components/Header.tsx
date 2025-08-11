@@ -3,15 +3,15 @@
 import { useState } from 'react';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
-import { 
+import {
   Sheet,
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { 
-  Menu, 
-  Sun, 
-  Moon, 
+import {
+  Menu,
+  Sun,
+  Moon,
   User,
   Home,
   Newspaper,
@@ -19,6 +19,7 @@ import {
   Info
 } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 interface HeaderProps {
   onNewsClick?: () => void;
@@ -28,18 +29,17 @@ interface HeaderProps {
 export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const handleContactsClick = () => {
-    if (onContactsClick) {
-      onContactsClick();
-    } else {
-      const footer = document.querySelector('footer');
-      if (footer) {
-        footer.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
+    onContactsClick
+      ? onContactsClick()
+      : pathname !== '/contact'
+        ? document.querySelector('footer')?.scrollIntoView({ behavior: 'smooth' })
+        : null;
+
     setMobileMenuOpen(false);
-  };
+  };  
 
   const handleNewsClick = () => {
     if (onNewsClick) {
@@ -54,9 +54,21 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
 
   const navigationItems = [
     { name: 'Главная', href: '/', icon: Home },
-    { name: 'Новости', onClick: handleNewsClick, icon: Newspaper },
+    {
+      name: 'Новости',
+      href: '/news',
+      onClick: handleNewsClick,
+      icon: Newspaper,
+      isLink: pathname === '/news'
+    },
     { name: 'О нас', href: '/about', icon: Info },
-    { name: 'Контакты', onClick: handleContactsClick, icon: Mail },
+    {
+      name: 'Контакты',
+      href: '/contact',
+      onClick: handleContactsClick,
+      icon: Mail,
+      isLink: pathname === '/contact'
+    },
   ];
 
   return (
@@ -77,30 +89,48 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
 
         {/* Навигация для десктопа */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Link 
+          <Link
             href="/"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             Главная
           </Link>
-          <button 
-            onClick={handleNewsClick}
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Новости
-          </button>
-          <Link 
+          {pathname === '/news' ? (
+            <Link
+              href="/news"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Новости
+            </Link>
+          ) : (
+            <button
+              onClick={handleNewsClick}
+              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              Новости
+            </button>
+          )}
+          <Link
             href="/about"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             О нас
           </Link>
-          <button 
-            onClick={handleContactsClick}
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Контакты
-          </button>
+          {pathname === '/contact' ? (
+            <Link
+              href="/contact"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Контакты
+            </Link>
+          ) : (
+            <button
+              onClick={handleContactsClick}
+              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              Контакты
+            </button>
+          )}
         </nav>
 
         {/* Правая часть */}
@@ -110,25 +140,12 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
             variant="ghost"
             size="sm"
             onClick={toggleTheme}
-            className="w-9 h-9 p-0"
+            className="w-9 h-9 p-0 cursor-pointer"
           >
             <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
             <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             <span className="sr-only">Переключить тему</span>
           </Button>
-
-          {/* Кнопки для десктопа */}
-          <div className="hidden md:flex items-center space-x-2">
-            <Link href="/admin/login">
-              <Button variant="ghost" size="sm">
-                <User className="h-4 w-4 mr-2" />
-                Войти
-              </Button>
-            </Link>
-            <Button size="sm">
-              Присоединиться
-            </Button>
-          </div>
 
           {/* Мобильное меню */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -144,7 +161,7 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
                 <div className="space-y-2">
                   {navigationItems.map((item) => (
                     <div key={item.name}>
-                      {item.href ? (
+                      {(item.href && (item.isLink || !item.onClick)) ? (
                         <Link
                           href={item.href}
                           onClick={() => setMobileMenuOpen(false)}

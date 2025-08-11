@@ -22,7 +22,7 @@ const navigation = [
   { name: 'Новости', href: '/admin/news', icon: FileText },
   { name: 'Слайдер', href: '/admin/slider', icon: ImageIcon },
   { name: 'Вакансии', href: '/admin/vacancies', icon: Briefcase },
-  { name: 'Рассылка', href: '/admin/newsletter', icon: Send },
+  { name: 'Рассылка', href: '/admin/sendletter', icon: Send },
   { name: 'Подписчики', href: '/admin/subscribers', icon: Users },
   { name: 'Аналитика', href: '/admin/analytics', icon: BarChart3 },
   { name: 'Добавить админа', href: '/admin/users/create', icon: UserPlus },

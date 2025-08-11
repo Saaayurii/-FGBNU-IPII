@@ -8,6 +8,7 @@ import Image from "next/image";
 import { PostWithAuthor } from "@/types";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
+import Link from "next/link";
 
 interface NewsProps {
   onViewAllNews?: () => void;
@@ -139,13 +140,9 @@ export function News({ onViewAllNews, posts = [], onReadNews }: NewsProps) {
 
         {displayPosts.length > 0 && (
           <div className="text-center mt-16">
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={onViewAllNews}
-            >
+            <Link href="/news" >
               Все новости
-            </Button>
+            </Link>
           </div>
         )}
       </div>

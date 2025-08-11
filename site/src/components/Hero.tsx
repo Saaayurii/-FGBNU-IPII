@@ -88,7 +88,7 @@ export function Hero({ sliderImages = [] }: HeroProps) {
   }, [activeImages.length]);
 
   return (
-    <section className="py-20 md:py-32 bg-gradient-to-b from-background via-background to-[#f8fafc]">
+    <section className="py-20 md:py-32 bg-gradient-to-b from-background via-background to-[#f8fafc] mb-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-8">
           <div className="space-y-4">
