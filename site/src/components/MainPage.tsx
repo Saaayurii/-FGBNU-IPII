@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
@@ -14,24 +14,31 @@ interface MainPageProps {
   sliderImages: any[];
 }
 
-export function MainPage({ newsPosts, vacancyPosts, sliderImages }: MainPageProps) {
+export function MainPage({
+  newsPosts,
+  vacancyPosts,
+  sliderImages,
+}: MainPageProps) {
   const handleNewsClick = () => {
-    const newsSection = document.getElementById('news-section');
+    const newsSection = document.getElementById("news-section");
     if (newsSection) {
-      newsSection.scrollIntoView({ behavior: 'smooth' });
+      newsSection.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   const handleContactsClick = () => {
-    const contactSection = document.getElementById('contact-section');
+    const contactSection = document.getElementById("contact-section");
     if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
+      contactSection.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <Header onNewsClick={handleNewsClick} onContactsClick={handleContactsClick} />
+      <Header
+        onNewsClick={handleNewsClick}
+        onContactsClick={handleContactsClick}
+      />
       <main>
         <Hero sliderImages={sliderImages} />
         <div id="news-section">

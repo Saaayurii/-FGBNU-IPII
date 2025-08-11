@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 // Extend HTMLDivElement to include Leaflet properties
 interface LeafletContainer extends HTMLDivElement {
@@ -8,65 +8,69 @@ interface LeafletContainer extends HTMLDivElement {
 }
 
 // Coordinates for Donetsk, ul. Artema 118B
-const INSTITUTE_COORDINATES = [48.0073, 37.8050] as [number, number];
+const INSTITUTE_COORDINATES = [48.0073, 37.805] as [number, number];
 
 interface LeafletMapProps {
   className?: string;
 }
 
-export function LeafletMap({ className = '' }: LeafletMapProps) {
+export function LeafletMap({ className = "" }: LeafletMapProps) {
   const mapRef = useRef<LeafletContainer>(null);
   const mapInstanceRef = useRef<any>(null);
   const isInitializingRef = useRef(false);
-  const [mapId] = useState(() => `map-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
+  const [mapId] = useState(
+    () => `map-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+  );
 
   useEffect(() => {
     // Prevent multiple simultaneous initializations
     if (isInitializingRef.current || !mapRef.current) return;
-    
+
     const container = mapRef.current;
-    
+
     // Более агрессивная очистка контейнера
     if (mapInstanceRef.current) {
       try {
         mapInstanceRef.current.off();
         mapInstanceRef.current.remove();
       } catch (e) {
-        console.warn('Error removing existing map:', e);
+        console.warn("Error removing existing map:", e);
       }
       mapInstanceRef.current = null;
     }
 
     // Полная очистка всех Leaflet свойств
-    Object.keys(container).forEach(key => {
-      if (key.startsWith('_leaflet')) {
+    Object.keys(container).forEach((key) => {
+      if (key.startsWith("_leaflet")) {
         delete (container as any)[key];
       }
     });
 
     // Очистка контейнера
-    container.innerHTML = '';
-    container.className = container.className.replace(/leaflet-[^\s]*/g, '').trim();
-    
+    container.innerHTML = "";
+    container.className = container.className
+      .replace(/leaflet-[^\s]*/g, "")
+      .trim();
+
     // Создание нового уникального ID
     container.id = mapId;
-    container.removeAttribute('data-leaflet-id');
-    
+    container.removeAttribute("data-leaflet-id");
+
     // Mark as initializing
     isInitializingRef.current = true;
 
     // Dynamic import to avoid SSR issues
     const initMap = async () => {
-      const L = await import('leaflet');
-      
+      const L = await import("leaflet");
+
       // Import Leaflet CSS
-      await import('leaflet/dist/leaflet.css' as any);
+      await import("leaflet/dist/leaflet.css" as any);
 
       // We'll use only custom icons, no default markers needed
 
       // Дополнительная проверка перед созданием карты
       if ((container as any)._leaflet_id) {
-        console.warn('Container still has leaflet_id, forcing cleanup');
+        console.warn("Container still has leaflet_id, forcing cleanup");
         delete (container as any)._leaflet_id;
       }
 
@@ -77,15 +81,17 @@ export function LeafletMap({ className = '' }: LeafletMapProps) {
           zoom: 16,
           zoomControl: true,
           scrollWheelZoom: true,
-          attributionControl: false // Remove attribution control
+          attributionControl: false, // Remove attribution control
         });
 
         // Add blue-themed tile layer
-        L.default.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '', // Remove attribution text
-          maxZoom: 19,
-          className: 'map-tiles'
-        }).addTo(map);
+        L.default
+          .tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "", // Remove attribution text
+            maxZoom: 19,
+            className: "map-tiles",
+          })
+          .addTo(map);
 
         // Create simple blue dot marker
         const customIcon = L.default.divIcon({
@@ -99,16 +105,18 @@ export function LeafletMap({ className = '' }: LeafletMapProps) {
               box-shadow: 0 2px 6px rgba(29, 78, 216, 0.4);
             "></div>
           `,
-          className: 'custom-dot-icon',
+          className: "custom-dot-icon",
           iconSize: [16, 16],
           iconAnchor: [8, 8],
-          popupAnchor: [0, -8]
+          popupAnchor: [0, -8],
         });
 
         // Add marker with popup
-        const marker = L.default.marker(INSTITUTE_COORDINATES, { icon: customIcon })
+        const marker = L.default
+          .marker(INSTITUTE_COORDINATES, { icon: customIcon })
           .addTo(map)
-          .bindPopup(`
+          .bindPopup(
+            `
             <div style="font-family: system-ui, -apple-system, sans-serif; padding: 4px;">
               <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #1e40af;">
                 ФГБНУ "ИПИИ"
@@ -123,26 +131,28 @@ export function LeafletMap({ className = '' }: LeafletMapProps) {
                 Институт проблем искусственного интеллекта
               </p>
             </div>
-          `, {
-            maxWidth: 250,
-            className: 'custom-popup'
-          });
+          `,
+            {
+              maxWidth: 250,
+              className: "custom-popup",
+            }
+          );
 
         // Auto-open popup
         marker.openPopup();
 
         mapInstanceRef.current = map;
-        
+
         // Mark initialization as complete
         isInitializingRef.current = false;
       } catch (error) {
-        console.error('Failed to initialize map:', error);
+        console.error("Failed to initialize map:", error);
         isInitializingRef.current = false;
         return;
       }
 
       // Add custom CSS for black, white, blue theme with minimal red
-      const style = document.createElement('style');
+      const style = document.createElement("style");
       style.textContent = `
         .map-tiles {
           filter: grayscale(0.3) sepia(0.2) hue-rotate(200deg) saturate(1.2) brightness(0.95) contrast(1.15);
@@ -184,7 +194,7 @@ export function LeafletMap({ className = '' }: LeafletMapProps) {
         try {
           mapInstanceRef.current.remove();
         } catch (e) {
-          console.warn('Error during cleanup:', e);
+          console.warn("Error during cleanup:", e);
         }
         mapInstanceRef.current = null;
       }
@@ -192,23 +202,25 @@ export function LeafletMap({ className = '' }: LeafletMapProps) {
       if (mapRef.current) {
         const container = mapRef.current;
         // Полная очистка всех Leaflet свойств
-        Object.keys(container).forEach(key => {
-          if (key.startsWith('_leaflet')) {
+        Object.keys(container).forEach((key) => {
+          if (key.startsWith("_leaflet")) {
             delete (container as any)[key];
           }
         });
-        container.innerHTML = '';
-        container.className = container.className.replace(/leaflet-[^\s]*/g, '').trim();
-        container.removeAttribute('data-leaflet-id');
+        container.innerHTML = "";
+        container.className = container.className
+          .replace(/leaflet-[^\s]*/g, "")
+          .trim();
+        container.removeAttribute("data-leaflet-id");
       }
     };
   }, []); // Empty dependency array - component will only initialize once
 
   return (
-    <div 
-      ref={mapRef} 
+    <div
+      ref={mapRef}
       className={`w-full h-full ${className}`}
-      style={{ minHeight: '400px' }}
+      style={{ minHeight: "400px" }}
     />
   );
 }
