@@ -8,18 +8,9 @@ export function ContactMap() {
     <section className="py-16 bg-gradient-to-br from-blue-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-<<<<<<< HEAD
           <h2 className="text-3xl font-bold text-black-900 mb-4">Как нас найти</h2>
           <p className="text-black-700 max-w-2xl mx-auto">
             ФГБНУ "Институт проблем искусственного интеллекта" располагается в центре Донецка
-=======
-          <h2 className="text-3xl font-bold text-blue-900 mb-4">
-            Как нас найти
-          </h2>
-          <p className="text-blue-700 max-w-2xl mx-auto">
-            ФГБНУ "Институт проблем искусственного интеллекта" располагается в
-            центре Донецка
->>>>>>> c780ecfe9fdd8d59b9791c3b7afdabfb6e84b66a
           </p>
         </div>
 
