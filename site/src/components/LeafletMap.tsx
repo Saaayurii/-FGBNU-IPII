@@ -2,6 +2,11 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+// Extend HTMLDivElement to include Leaflet properties
+interface LeafletContainer extends HTMLDivElement {
+  _leaflet_id?: number;
+}
+
 // Coordinates for Donetsk, ul. Artema 118B
 const INSTITUTE_COORDINATES = [48.0073, 37.8050] as [number, number];
 
@@ -10,7 +15,7 @@ interface LeafletMapProps {
 }
 
 export function LeafletMap({ className = '' }: LeafletMapProps) {
-  const mapRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<LeafletContainer>(null);
   const mapInstanceRef = useRef<any>(null);
   const isInitializingRef = useRef(false);
   const [mapId] = useState(() => `map-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
@@ -19,16 +24,12 @@ export function LeafletMap({ className = '' }: LeafletMapProps) {
     // Prevent multiple simultaneous initializations
     if (isInitializingRef.current || !mapRef.current) return;
     
-    // Check if Leaflet has already marked this container as initialized
     const container = mapRef.current;
-    if (container._leaflet_id) {
-      // Container is already initialized, force cleanup
-      delete container._leaflet_id;
-    }
     
-    // More aggressive cleanup
+    // Более агрессивная очистка контейнера
     if (mapInstanceRef.current) {
       try {
+        mapInstanceRef.current.off();
         mapInstanceRef.current.remove();
       } catch (e) {
         console.warn('Error removing existing map:', e);
@@ -36,9 +37,20 @@ export function LeafletMap({ className = '' }: LeafletMapProps) {
       mapInstanceRef.current = null;
     }
 
-    // Clear the container completely
+    // Полная очистка всех Leaflet свойств
+    Object.keys(container).forEach(key => {
+      if (key.startsWith('_leaflet')) {
+        delete (container as any)[key];
+      }
+    });
+
+    // Очистка контейнера
     container.innerHTML = '';
+    container.className = container.className.replace(/leaflet-[^\s]*/g, '').trim();
+    
+    // Создание нового уникального ID
     container.id = mapId;
+    container.removeAttribute('data-leaflet-id');
     
     // Mark as initializing
     isInitializingRef.current = true;
@@ -48,13 +60,19 @@ export function LeafletMap({ className = '' }: LeafletMapProps) {
       const L = await import('leaflet');
       
       // Import Leaflet CSS
-      await import('leaflet/dist/leaflet.css');
+      await import('leaflet/dist/leaflet.css' as any);
 
       // We'll use only custom icons, no default markers needed
 
-      // Create the map with unique container
+      // Дополнительная проверка перед созданием карты
+      if ((container as any)._leaflet_id) {
+        console.warn('Container still has leaflet_id, forcing cleanup');
+        delete (container as any)._leaflet_id;
+      }
+
+      // Create the map with container element directly
       try {
-        const map = L.default.map(mapId, {
+        const map = L.default.map(container, {
           center: INSTITUTE_COORDINATES,
           zoom: 16,
           zoomControl: true,
@@ -173,10 +191,15 @@ export function LeafletMap({ className = '' }: LeafletMapProps) {
       // Clean up container
       if (mapRef.current) {
         const container = mapRef.current;
-        if (container._leaflet_id) {
-          delete container._leaflet_id;
-        }
+        // Полная очистка всех Leaflet свойств
+        Object.keys(container).forEach(key => {
+          if (key.startsWith('_leaflet')) {
+            delete (container as any)[key];
+          }
+        });
         container.innerHTML = '';
+        container.className = container.className.replace(/leaflet-[^\s]*/g, '').trim();
+        container.removeAttribute('data-leaflet-id');
       }
     };
   }, []); // Empty dependency array - component will only initialize once
