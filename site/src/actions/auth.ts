@@ -15,13 +15,13 @@ export async function signInWithCredentials(email: string, password: string) {
     });
 
     if (result?.error) {
-      return { success: false, error: "Неверные учетные данные" };
+      return { success: false, error: "Неверные учетные данные" };
     }
 
     return { success: true };
   } catch (error) {
-    console.error("Ошибка входа:", error);
-    return { success: false, error: "Ошибка при входе в систему" };
+    console.error("Ошибка входа:", error);
+    return { success: false, error: "Ошибка при входе в систему" };
   }
 }
 
@@ -31,8 +31,8 @@ export async function signOutAction() {
     revalidatePath("/admin");
     return { success: true };
   } catch (error) {
-    console.error("Ошибка выхода:", error);
-    return { success: false, error: "Ошибка при выходе из системы" };
+    console.error("Ошибка выхода:", error);
+    return { success: false, error: "Ошибка при выходе из системы" };
   }
 }
 
@@ -71,8 +71,8 @@ export async function createUser(data: {
 
     return { success: true, data: user };
   } catch (error) {
-    console.error("Ошибка создания пользователя:", error);
-    return { success: false, error: "Ошибка при создании пользователя" };
+    console.error("Ошибка создания пользователя:", error);
+    return { success: false, error: "Ошибка при создании пользователя" };
   }
 }
 
@@ -100,8 +100,8 @@ export async function updateUserPassword(userId: string, currentPassword: string
 
     return { success: true };
   } catch (error) {
-    console.error("Ошибка обновления пароля:", error);
-    return { success: false, error: "Ошибка при обновлении пароля" };
+    console.error("Ошибка обновления пароля:", error);
+    return { success: false, error: "Ошибка при обновлении пароля" };
   }
 }
 
@@ -120,7 +120,7 @@ export async function getUserById(id: string) {
 
     return user;
   } catch (error) {
-    console.error("Ошибка получения пользователя:", error);
+    console.error("Ошибка получения пользователя:", error);
     return null;
   }
 }
@@ -142,7 +142,7 @@ export async function getAllUsers() {
 
     return users;
   } catch (error) {
-    console.error("Ошибка получения пользователей:", error);
+    console.error("Ошибка получения пользователей:", error);
     return [];
   }
 }
