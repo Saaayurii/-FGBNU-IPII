@@ -1,20 +1,26 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { PostsList } from '@/components/admin/PostsList';
-import { getAllPostsForAdmin, deletePost, updatePost } from '@/actions/posts';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, FileText, Eye, PenTool, TrendingUp } from 'lucide-react';
-import { toast } from 'sonner';
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { PostsList } from "@/components/admin/PostsList";
+import { getAllPostsForAdmin, deletePost, updatePost } from "@/actions/posts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2, FileText, Eye, PenTool, TrendingUp } from "lucide-react";
+import { toast } from "sonner";
 
 interface Post {
   id: string;
   title: string;
   description: string;
   excerpt: string;
-  category: 'NEWS' | 'VACANCY' | 'ANNOUNCEMENT' | 'EVENT';
+  category: "NEWS" | "VACANCY" | "ANNOUNCEMENT" | "EVENT";
   imageUrl?: string;
   published: boolean;
   views: number;
@@ -37,9 +43,9 @@ interface PostsData {
 }
 
 export default function NewsPage() {
-  const [postsData, setPostsData] = useState<PostsData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { 0: postsData, 1: setPostsData } = useState<PostsData | null>(null);
+  const { 0: isLoading, 1: setIsLoading } = useState(true);
+  const { 0: error, 1: setError } = useState<string | null>(null);
 
   const loadPosts = async () => {
     try {
@@ -47,8 +53,8 @@ export default function NewsPage() {
       const data = await getAllPostsForAdmin(1, 50);
       setPostsData(data);
     } catch (err) {
-      setError('Ошибка при загрузке постов');
-      console.error('Error loading posts:', err);
+      setError("Ошибка при загрузке постов");
+      console.error("Error loading posts:", err);
     } finally {
       setIsLoading(false);
     }
@@ -62,14 +68,14 @@ export default function NewsPage() {
     try {
       const result = await deletePost(id);
       if (result.success) {
-        toast.success('Пост успешно удален');
+        toast.success("Пост успешно удален");
         await loadPosts();
       } else {
-        toast.error('Ошибка при удалении поста');
+        toast.error("Ошибка при удалении поста");
       }
     } catch (err) {
-      toast.error('Ошибка при удалении поста');
-      console.error('Error deleting post:', err);
+      toast.error("Ошибка при удалении поста");
+      console.error("Error deleting post:", err);
     }
   };
 
@@ -77,14 +83,14 @@ export default function NewsPage() {
     try {
       const result = await updatePost(id, { published });
       if (result.success) {
-        toast.success(published ? 'Пост опубликован' : 'Пост скрыт');
+        toast.success(published ? "Пост опубликован" : "Пост скрыт");
         await loadPosts();
       } else {
-        toast.error('Ошибка при изменении статуса поста');
+        toast.error("Ошибка при изменении статуса поста");
       }
     } catch (err) {
-      toast.error('Ошибка при изменении статуса поста');
-      console.error('Error toggling post status:', err);
+      toast.error("Ошибка при изменении статуса поста");
+      console.error("Error toggling post status:", err);
     }
   };
 
@@ -92,9 +98,12 @@ export default function NewsPage() {
     if (!postsData) return null;
 
     const totalPosts = postsData.posts.length;
-    const publishedPosts = postsData.posts.filter(p => p.published).length;
+    const publishedPosts = postsData.posts.filter((p) => p.published).length;
     const draftPosts = totalPosts - publishedPosts;
-    const totalViews = postsData.posts.reduce((sum, post) => sum + post.views, 0);
+    const totalViews = postsData.posts.reduce(
+      (sum, post) => sum + post.views,
+      0
+    );
 
     return { totalPosts, publishedPosts, draftPosts, totalViews };
   };
@@ -120,22 +129,25 @@ export default function NewsPage() {
     );
   }
 
-  const formattedPosts = postsData?.posts.map(post => ({
-    id: post.id,
-    title: post.title,
-    excerpt: post.description || post.excerpt || '',
-    category: post.category as 'NEWS' | 'VACANCY' | 'ANNOUNCEMENT' | 'EVENT',
-    imageUrl: post.imageUrl,
-    published: post.published,
-    createdAt: post.createdAt,
-    updatedAt: post.updatedAt
-  })) || [];
+  const formattedPosts =
+    postsData?.posts.map((post) => ({
+      id: post.id,
+      title: post.title,
+      excerpt: post.description || post.excerpt || "",
+      category: post.category as "NEWS" | "VACANCY" | "ANNOUNCEMENT" | "EVENT",
+      imageUrl: post.imageUrl,
+      published: post.published,
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
+    })) || [];
 
   return (
     <div className="space-y-6">
       {/* Заголовок */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Управление контентом</h1>
+        <h1 className="text-3xl font-bold tracking-tight">
+          Управление контентом
+        </h1>
         <p className="text-muted-foreground">
           Создавайте и управляйте новостями, вакансиями и другим контентом
         </p>
@@ -146,7 +158,9 @@ export default function NewsPage() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Всего постов</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Всего постов
+              </CardTitle>
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -159,11 +173,15 @@ export default function NewsPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Опубликовано</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Опубликовано
+              </CardTitle>
               <Eye className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">{stats.publishedPosts}</div>
+              <div className="text-2xl font-bold text-green-600">
+                {stats.publishedPosts}
+              </div>
               <p className="text-xs text-muted-foreground">
                 Доступно для просмотра
               </p>
@@ -176,10 +194,10 @@ export default function NewsPage() {
               <PenTool className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-600">{stats.draftPosts}</div>
-              <p className="text-xs text-muted-foreground">
-                Не опубликованы
-              </p>
+              <div className="text-2xl font-bold text-orange-600">
+                {stats.draftPosts}
+              </div>
+              <p className="text-xs text-muted-foreground">Не опубликованы</p>
             </CardContent>
           </Card>
 
@@ -189,10 +207,10 @@ export default function NewsPage() {
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalViews.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                Общее количество
-              </p>
+              <div className="text-2xl font-bold">
+                {stats.totalViews.toLocaleString()}
+              </div>
+              <p className="text-xs text-muted-foreground">Общее количество</p>
             </CardContent>
           </Card>
         </div>

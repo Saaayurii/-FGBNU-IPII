@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { PostForm } from '@/components/admin/PostForm';
-import { createPost } from '@/actions/posts';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { PostForm } from "@/components/admin/PostForm";
+import { createPost } from "@/actions/posts";
+import { toast } from "sonner";
 
 export default function CreatePostPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const { 0: isLoading, 1: setIsLoading } = useState(false);
   const router = useRouter();
   const { data: session } = useSession();
 
   const handleSubmit = async (data: Record<string, unknown>) => {
     if (!session?.user?.id) {
-      toast.error('Необходимо войти в систему');
+      toast.error("Необходимо войти в систему");
       return;
     }
 
@@ -28,18 +28,18 @@ export default function CreatePostPage() {
         imageUrl: data.imageUrl,
         published: data.published,
         featured: false,
-        authorId: session.user.id
+        authorId: session.user.id,
       });
 
       if (result.success) {
-        toast.success('Пост успешно создан');
-        router.push('/admin/news');
+        toast.success("Пост успешно создан");
+        router.push("/admin/news");
       } else {
-        toast.error('Ошибка при создании поста');
+        toast.error("Ошибка при создании поста");
       }
     } catch (error) {
-      toast.error('Ошибка при создании поста');
-      console.error('Error creating post:', error);
+      toast.error("Ошибка при создании поста");
+      console.error("Error creating post:", error);
     } finally {
       setIsLoading(false);
     }

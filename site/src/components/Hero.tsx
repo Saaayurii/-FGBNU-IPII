@@ -19,7 +19,7 @@ interface HeroProps {
 }
 
 export function Hero({ sliderImages = [] }: HeroProps) {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const { 0: currentSlide, 1: setCurrentSlide } = useState(0);
 
   // Fallback slider images if none provided from database
   const fallbackImages = [

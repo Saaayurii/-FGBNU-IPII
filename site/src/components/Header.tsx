@@ -1,24 +1,20 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useTheme } from 'next-themes';
-import { Button } from '@/components/ui/button';
-import { 
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '@/components/ui/sheet';
-import { 
-  Menu, 
-  Sun, 
-  Moon, 
+import { useState } from "react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Menu,
+  Sun,
+  Moon,
   User,
   Home,
   Newspaper,
   Mail,
-  Info
-} from 'lucide-react';
-import Link from 'next/link';
+  Info,
+} from "lucide-react";
+import Link from "next/link";
 
 interface HeaderProps {
   onNewsClick?: () => void;
@@ -27,15 +23,15 @@ interface HeaderProps {
 
 export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
   const { theme, setTheme } = useTheme();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { 0: mobileMenuOpen, 1: setMobileMenuOpen } = useState(false);
 
   const handleContactsClick = () => {
     if (onContactsClick) {
       onContactsClick();
     } else {
-      const footer = document.querySelector('footer');
+      const footer = document.querySelector("footer");
       if (footer) {
-        footer.scrollIntoView({ behavior: 'smooth' });
+        footer.scrollIntoView({ behavior: "smooth" });
       }
     }
     setMobileMenuOpen(false);
@@ -49,14 +45,14 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
   };
 
   const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+    setTheme(theme === "dark" ? "light" : "dark");
   };
 
   const navigationItems = [
-    { name: 'Главная', href: '/', icon: Home },
-    { name: 'Новости', onClick: handleNewsClick, icon: Newspaper },
-    { name: 'О нас', href: '/about', icon: Info },
-    { name: 'Контакты', onClick: handleContactsClick, icon: Mail },
+    { name: "Главная", href: "/", icon: Home },
+    { name: "Новости", onClick: handleNewsClick, icon: Newspaper },
+    { name: "О нас", href: "/about", icon: Info },
+    { name: "Контакты", onClick: handleContactsClick, icon: Mail },
   ];
 
   return (
@@ -68,7 +64,9 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
             <span className="text-primary-foreground text-sm font-bold">И</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-semibold leading-tight">ФГБНУ "ИПИИ"</span>
+            <span className="text-lg font-semibold leading-tight">
+              ФГБНУ "ИПИИ"
+            </span>
             <span className="text-xs text-muted-foreground hidden sm:block">
               Совет молодых ученых
             </span>
@@ -77,25 +75,25 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
 
         {/* Навигация для десктопа */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Link 
+          <Link
             href="/"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             Главная
           </Link>
-          <button 
+          <button
             onClick={handleNewsClick}
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             Новости
           </button>
-          <Link 
+          <Link
             href="/about"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             О нас
           </Link>
-          <button 
+          <button
             onClick={handleContactsClick}
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
@@ -125,15 +123,17 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
                 Войти
               </Button>
             </Link>
-            <Button size="sm">
-              Присоединиться
-            </Button>
+            <Button size="sm">Присоединиться</Button>
           </div>
 
           {/* Мобильное меню */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="md:hidden w-9 h-9 p-0">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="md:hidden w-9 h-9 p-0"
+              >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Открыть меню</span>
               </Button>
@@ -171,13 +171,19 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
 
                 {/* Кнопки действий */}
                 <div className="space-y-2">
-                  <Link href="/admin/login" onClick={() => setMobileMenuOpen(false)}>
+                  <Link
+                    href="/admin/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     <Button variant="ghost" className="w-full justify-start">
                       <User className="h-4 w-4 mr-2" />
                       Войти
                     </Button>
                   </Link>
-                  <Button className="w-full" onClick={() => setMobileMenuOpen(false)}>
+                  <Button
+                    className="w-full"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     Присоединиться
                   </Button>
                 </div>
