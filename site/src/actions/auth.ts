@@ -15,13 +15,13 @@ export async function signInWithCredentials(email: string, password: string) {
     });
 
     if (result?.error) {
-      return { success: false, error: "525@=K5 CG5B=K5 40==K5" };
+      return { success: false, error: "Неверные учетные данные" };
     }
 
     return { success: true };
   } catch (error) {
-    console.error("H81:0 2E>40:", error);
-    return { success: false, error: "H81:0 ?@8 2E>45 2 A8AB5<C" };
+    console.error("Ошибка входа:", error);
+    return { success: false, error: "Ошибка при входе в систему" };
   }
 }
 
@@ -31,8 +31,8 @@ export async function signOutAction() {
     revalidatePath("/admin");
     return { success: true };
   } catch (error) {
-    console.error("H81:0 2KE>40:", error);
-    return { success: false, error: "H81:0 ?@8 2KE>45 87 A8AB5<K" };
+    console.error("Ошибка выхода:", error);
+    return { success: false, error: "Ошибка при выходе из системы" };
   }
 }
 
@@ -48,7 +48,7 @@ export async function createUser(data: {
     });
 
     if (existingUser) {
-      return { success: false, error: ">;L7>20B5;L A B0:8< email C65 ACI5AB2C5B" };
+      return { success: false, error: "Пользователь с таким email уже существует" };
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 12);
@@ -71,8 +71,8 @@ export async function createUser(data: {
 
     return { success: true, data: user };
   } catch (error) {
-    console.error("H81:0 A>740=8O ?>;L7>20B5;O:", error);
-    return { success: false, error: "H81:0 ?@8 A>740=88 ?>;L7>20B5;O" };
+    console.error("Ошибка создания пользователя:", error);
+    return { success: false, error: "Ошибка при создании пользователя" };
   }
 }
 
@@ -83,12 +83,12 @@ export async function updateUserPassword(userId: string, currentPassword: string
     });
 
     if (!user || !user.password) {
-      return { success: false, error: ">;L7>20B5;L =5 =0945=" };
+      return { success: false, error: "Пользователь не найден" };
     }
 
     const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
     if (!isCurrentPasswordValid) {
-      return { success: false, error: "525@=K9 B5:CI89 ?0@>;L" };
+      return { success: false, error: "Неверный текущий пароль" };
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 12);
@@ -100,8 +100,8 @@ export async function updateUserPassword(userId: string, currentPassword: string
 
     return { success: true };
   } catch (error) {
-    console.error("H81:0 >1=>2;5=8O ?0@>;O:", error);
-    return { success: false, error: "H81:0 ?@8 >1=>2;5=88 ?0@>;O" };
+    console.error("Ошибка обновления пароля:", error);
+    return { success: false, error: "Ошибка при обновлении пароля" };
   }
 }
 
@@ -120,7 +120,7 @@ export async function getUserById(id: string) {
 
     return user;
   } catch (error) {
-    console.error("H81:0 ?>;CG5=8O ?>;L7>20B5;O:", error);
+    console.error("Ошибка получения пользователя:", error);
     return null;
   }
 }
@@ -142,7 +142,7 @@ export async function getAllUsers() {
 
     return users;
   } catch (error) {
-    console.error("H81:0 ?>;CG5=8O ?>;L7>20B5;59:", error);
+    console.error("Ошибка получения пользователей:", error);
     return [];
   }
 }
