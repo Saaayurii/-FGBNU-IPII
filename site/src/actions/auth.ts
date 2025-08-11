@@ -48,7 +48,7 @@ export async function createUser(data: {
     });
 
     if (existingUser) {
-      return { success: false, error: "Пользователь с таким email уже существует" };
+      return { success: false, error: "Пользователь с таким email уже существует" };
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 12);
@@ -83,12 +83,12 @@ export async function updateUserPassword(userId: string, currentPassword: string
     });
 
     if (!user || !user.password) {
-      return { success: false, error: "Пользователь не найден" };
+      return { success: false, error: "Пользователь не найден" };
     }
 
     const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
     if (!isCurrentPasswordValid) {
-      return { success: false, error: "Неверный текущий пароль" };
+      return { success: false, error: "Неверный текущий пароль" };
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 12);
