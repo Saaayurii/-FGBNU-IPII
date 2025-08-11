@@ -19,57 +19,67 @@ interface HeroProps {
 }
 
 export function Hero({ sliderImages = [] }: HeroProps) {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const { 0: currentSlide, 1: setCurrentSlide } = useState(0);
 
   // Fallback slider images if none provided from database
   const fallbackImages = [
     {
       id: "1",
-      imageUrl: "https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=1200&q=80",
+      imageUrl:
+        "https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=1200&q=80",
       title: "Беспилотный летательный аппарат в полете",
       order: 0,
-      active: true
+      active: true,
     },
     {
-      id: "2", 
-      imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&q=80",
+      id: "2",
+      imageUrl:
+        "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&q=80",
       title: "Лаборатория искусственного интеллекта",
       order: 1,
-      active: true
+      active: true,
     },
     {
       id: "3",
-      imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=1200&q=80", 
+      imageUrl:
+        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=1200&q=80",
       title: "Компьютерное зрение и обработка изображений",
       order: 2,
-      active: true
+      active: true,
     },
     {
       id: "4",
-      imageUrl: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&q=80",
-      title: "Нейронные сети и глубокое обучение", 
+      imageUrl:
+        "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&q=80",
+      title: "Нейронные сети и глубокое обучение",
       order: 3,
-      active: true
+      active: true,
     },
     {
       id: "5",
-      imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
+      imageUrl:
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
       title: "Геолокация и картография",
       order: 4,
-      active: true
-    }
+      active: true,
+    },
   ];
 
-  const activeImages = sliderImages.length > 0 
-    ? sliderImages.filter(img => img.active).sort((a, b) => a.order - b.order)
-    : fallbackImages;
+  const activeImages =
+    sliderImages.length > 0
+      ? sliderImages
+          .filter((img) => img.active)
+          .sort((a, b) => a.order - b.order)
+      : fallbackImages;
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % activeImages.length);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + activeImages.length) % activeImages.length);
+    setCurrentSlide(
+      (prev) => (prev - 1 + activeImages.length) % activeImages.length
+    );
   };
 
   const goToSlide = (index: number) => {
@@ -79,7 +89,7 @@ export function Hero({ sliderImages = [] }: HeroProps) {
   // Auto-advance slides
   useEffect(() => {
     if (activeImages.length <= 1) return;
-    
+
     const timer = setInterval(() => {
       nextSlide();
     }, 4000);
@@ -97,39 +107,73 @@ export function Hero({ sliderImages = [] }: HeroProps) {
               <span className="text-primary block mt-2">ФГБНУ ИПИИ</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Лаборатория интеллектуальных систем и анализа данных (ЛИСАД) является основным структурным научным подразделением ФГБНУ «Институт проблем искусственного интеллекта».
+              Лаборатория интеллектуальных систем и анализа данных (ЛИСАД)
+              является основным структурным научным подразделением ФГБНУ
+              «Институт проблем искусственного интеллекта».
             </p>
           </div>
 
           <div className="mt-16 space-y-8 max-w-full mx-auto px-4 sm:px-6 lg:px-8 text-left">
             <div className="bg-secondary/30 rounded-lg p-8 space-y-6">
-              <h3 className="text-2xl font-semibold text-center mb-6">О деятельности лаборатории</h3>
-              
+              <h3 className="text-2xl font-semibold text-center mb-6">
+                О деятельности лаборатории
+              </h3>
+
               <p className="text-muted-foreground leading-relaxed">
-                Исследования лаборатории проводятся в соответствии с Указом Президента Российской Федерации от 28 февраля 2024 г. N 145 "О Стратегии научно-технологического развития Российской Федерации" и относятся к п. 5. «Интеллектуальные транспортные и телекоммуникационные системы, включая автономные транспортные средства» приоритетных направлений согласно Указу Президента Российской Федерации от 18 июня 2024 г. № 529, "Об утверждении приоритетных направлений научно-технологического развития и перечня важнейших наукоемких технологий".
+                Исследования лаборатории проводятся в соответствии с Указом
+                Президента Российской Федерации от 28 февраля 2024 г. N 145 "О
+                Стратегии научно-технологического развития Российской Федерации"
+                и относятся к п. 5. «Интеллектуальные транспортные и
+                телекоммуникационные системы, включая автономные транспортные
+                средства» приоритетных направлений согласно Указу Президента
+                Российской Федерации от 18 июня 2024 г. № 529, "Об утверждении
+                приоритетных направлений научно-технологического развития и
+                перечня важнейших наукоемких технологий".
               </p>
 
               <p className="text-muted-foreground leading-relaxed">
-                Разработка технологий компьютерного зрения, предназначенных для навигации беспилотными летательными аппаратами (БПЛА) с помощью ориентиров, карты местности, позволяющие достичь высокой точности навигации для БПЛА, особенно без сигнала от спутниковой навигационной системы (СНС), представляет собой актуальную задачу, имеющую важное практическое значение. Выполнение задач БПЛА осложняется рядом факторов: окружающая среда наполнена различными подвижными и неподвижными препятствиями, теряется сигнал дистанционного управления с пульта оператора и СНС, невозможность обеспечить достоверность навигационной информации в случае отсутствия сигнала СНС.
+                Разработка технологий компьютерного зрения, предназначенных для
+                навигации беспилотными летательными аппаратами (БПЛА) с помощью
+                ориентиров, карты местности, позволяющие достичь высокой
+                точности навигации для БПЛА, особенно без сигнала от спутниковой
+                навигационной системы (СНС), представляет собой актуальную
+                задачу, имеющую важное практическое значение. Выполнение задач
+                БПЛА осложняется рядом факторов: окружающая среда наполнена
+                различными подвижными и неподвижными препятствиями, теряется
+                сигнал дистанционного управления с пульта оператора и СНС,
+                невозможность обеспечить достоверность навигационной информации
+                в случае отсутствия сигнала СНС.
               </p>
 
               <p className="text-muted-foreground leading-relaxed">
-                Институт всячески способствует участию сотрудников лаборатории в конференциях и семинарах. Четверо молодых ученых приняли участие в Одиннадцатой всероссийской молодёжной школе-семинаре по проблемам информационной безопасности ПЕРСПЕКТИВА-2024 (г. Таганрог). Двое молодых ученых приняли участие в Десятой международной конференции по когнитивной науке (г. Пятигорск).
+                Институт всячески способствует участию сотрудников лаборатории в
+                конференциях и семинарах. Четверо молодых ученых приняли участие
+                в Одиннадцатой всероссийской молодёжной школе-семинаре по
+                проблемам информационной безопасности ПЕРСПЕКТИВА-2024 (г.
+                Таганрог). Двое молодых ученых приняли участие в Десятой
+                международной конференции по когнитивной науке (г. Пятигорск).
               </p>
             </div>
 
             {/* Custom Slider */}
             {activeImages.length > 0 && (
               <div className="bg-secondary/30 rounded-lg p-6">
-                <h3 className="text-2xl font-semibold text-center mb-6">Наши исследования в фотографиях</h3>
+                <h3 className="text-2xl font-semibold text-center mb-6">
+                  Наши исследования в фотографиях
+                </h3>
                 <div className="relative">
                   <div className="relative h-80 md:h-96 rounded-lg overflow-hidden">
-                    <div 
+                    <div
                       className="flex transition-transform duration-500 ease-in-out h-full"
-                      style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                      style={{
+                        transform: `translateX(-${currentSlide * 100}%)`,
+                      }}
                     >
                       {activeImages.map((image, index) => (
-                        <div key={image.id} className="w-full h-full flex-shrink-0 relative">
+                        <div
+                          key={image.id}
+                          className="w-full h-full flex-shrink-0 relative"
+                        >
                           <Image
                             src={image.imageUrl}
                             alt={image.title || `Слайд ${index + 1}`}
@@ -139,7 +183,9 @@ export function Hero({ sliderImages = [] }: HeroProps) {
                           />
                           {image.title && (
                             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
-                              <h4 className="text-white font-semibold text-lg">{image.title}</h4>
+                              <h4 className="text-white font-semibold text-lg">
+                                {image.title}
+                              </h4>
                             </div>
                           )}
                         </div>
@@ -171,7 +217,9 @@ export function Hero({ sliderImages = [] }: HeroProps) {
                               key={index}
                               onClick={() => goToSlide(index)}
                               className={`w-2 h-2 rounded-full transition-all ${
-                                index === currentSlide ? 'bg-white' : 'bg-white/50'
+                                index === currentSlide
+                                  ? "bg-white"
+                                  : "bg-white/50"
                               }`}
                               aria-label={`Перейти к слайду ${index + 1}`}
                             />

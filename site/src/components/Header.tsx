@@ -1,5 +1,6 @@
-'use client';
+"use client";
 
+<<<<<<< HEAD
 import { useState } from 'react';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,12 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
+=======
+import { useState } from "react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+>>>>>>> c780ecfe9fdd8d59b9791c3b7afdabfb6e84b66a
 import {
   Menu,
   Sun,
@@ -16,10 +23,16 @@ import {
   Home,
   Newspaper,
   Mail,
+<<<<<<< HEAD
   Info
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+=======
+  Info,
+} from "lucide-react";
+import Link from "next/link";
+>>>>>>> c780ecfe9fdd8d59b9791c3b7afdabfb6e84b66a
 
 interface HeaderProps {
   onNewsClick?: () => void;
@@ -28,6 +41,7 @@ interface HeaderProps {
 
 export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
   const { theme, setTheme } = useTheme();
+<<<<<<< HEAD
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -38,6 +52,19 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
         ? document.querySelector('footer')?.scrollIntoView({ behavior: 'smooth' })
         : null;
 
+=======
+  const { 0: mobileMenuOpen, 1: setMobileMenuOpen } = useState(false);
+
+  const handleContactsClick = () => {
+    if (onContactsClick) {
+      onContactsClick();
+    } else {
+      const footer = document.querySelector("footer");
+      if (footer) {
+        footer.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+>>>>>>> c780ecfe9fdd8d59b9791c3b7afdabfb6e84b66a
     setMobileMenuOpen(false);
   };  
 
@@ -49,10 +76,11 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
   };
 
   const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+    setTheme(theme === "dark" ? "light" : "dark");
   };
 
   const navigationItems = [
+<<<<<<< HEAD
     { name: 'Главная', href: '/', icon: Home },
     {
       name: 'Новости',
@@ -69,6 +97,12 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
       icon: Mail,
       isLink: pathname === '/contact'
     },
+=======
+    { name: "Главная", href: "/", icon: Home },
+    { name: "Новости", onClick: handleNewsClick, icon: Newspaper },
+    { name: "О нас", href: "/about", icon: Info },
+    { name: "Контакты", onClick: handleContactsClick, icon: Mail },
+>>>>>>> c780ecfe9fdd8d59b9791c3b7afdabfb6e84b66a
   ];
 
   return (
@@ -80,7 +114,9 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
             <span className="text-primary-foreground text-sm font-bold">И</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-semibold leading-tight">ФГБНУ "ИПИИ"</span>
+            <span className="text-lg font-semibold leading-tight">
+              ФГБНУ "ИПИИ"
+            </span>
             <span className="text-xs text-muted-foreground hidden sm:block">
               Совет молодых ученых
             </span>
@@ -95,6 +131,7 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
           >
             Главная
           </Link>
+<<<<<<< HEAD
           {pathname === '/news' ? (
             <Link
               href="/news"
@@ -110,12 +147,21 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
               Новости
             </button>
           )}
+=======
+          <button
+            onClick={handleNewsClick}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Новости
+          </button>
+>>>>>>> c780ecfe9fdd8d59b9791c3b7afdabfb6e84b66a
           <Link
             href="/about"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             О нас
           </Link>
+<<<<<<< HEAD
           {pathname === '/contact' ? (
             <Link
               href="/contact"
@@ -131,6 +177,14 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
               Контакты
             </button>
           )}
+=======
+          <button
+            onClick={handleContactsClick}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Контакты
+          </button>
+>>>>>>> c780ecfe9fdd8d59b9791c3b7afdabfb6e84b66a
         </nav>
 
         {/* Правая часть */}
@@ -147,10 +201,28 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
             <span className="sr-only">Переключить тему</span>
           </Button>
 
+<<<<<<< HEAD
+=======
+          {/* Кнопки для десктопа */}
+          <div className="hidden md:flex items-center space-x-2">
+            <Link href="/admin/login">
+              <Button variant="ghost" size="sm">
+                <User className="h-4 w-4 mr-2" />
+                Войти
+              </Button>
+            </Link>
+            <Button size="sm">Присоединиться</Button>
+          </div>
+
+>>>>>>> c780ecfe9fdd8d59b9791c3b7afdabfb6e84b66a
           {/* Мобильное меню */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="md:hidden w-9 h-9 p-0">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="md:hidden w-9 h-9 p-0"
+              >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Открыть меню</span>
               </Button>
@@ -188,13 +260,19 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
 
                 {/* Кнопки действий */}
                 <div className="space-y-2">
-                  <Link href="/admin/login" onClick={() => setMobileMenuOpen(false)}>
+                  <Link
+                    href="/admin/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     <Button variant="ghost" className="w-full justify-start">
                       <User className="h-4 w-4 mr-2" />
                       Войти
                     </Button>
                   </Link>
-                  <Button className="w-full" onClick={() => setMobileMenuOpen(false)}>
+                  <Button
+                    className="w-full"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     Присоединиться
                   </Button>
                 </div>
