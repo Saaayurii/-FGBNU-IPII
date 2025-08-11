@@ -1,5 +1,3 @@
-'use client'
-
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/ui/Footer";
 import { Filters } from '@/components/news/CategoryFilter';
@@ -25,26 +23,12 @@ export default async function NewsPage({
     category: searchParams?.category
   };
 
-  const handleNewsClick = () => {
-    const newsSection = document.getElementById('news-section');
-    if (newsSection) {
-      newsSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const handleContactsClick = () => {
-    const contactSection = document.getElementById('contact-section');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const { news, totalPages } = await fetchNews(currentPage, 5, filters);
 
   return (
     <div className="min-h-screen bg-background">
 
-      <Header onNewsClick={handleNewsClick} onContactsClick={handleContactsClick} />
+      <Header />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 p-10">
         <h1 className="text-3xl md:text-4xl font-bold mb-4">Новости</h1>
