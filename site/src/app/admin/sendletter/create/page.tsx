@@ -1,27 +1,27 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, Loader2, Save, Eye } from 'lucide-react';
-import Link from 'next/link';
-import { toast } from 'sonner';
-import { adminApi } from '@/lib/core';
-import { RichTextEditor } from '@/components/admin/RichTextEditor';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowLeft, Loader2, Save, Eye } from "lucide-react";
+import Link from "next/link";
+import { toast } from "sonner";
+import { adminApi } from "@/lib/core";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 
 export default function CreateNewsletterPage() {
-  const [formData, setFormData] = useState({
-    subject: '',
-    content: '',
-    scheduledAt: ''
+  const { 0: formData, 1: setFormData } = useState({
+    subject: "",
+    content: "",
+    scheduledAt: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [showPreview, setShowPreview] = useState(false);
+  const { 0: isLoading, 1: setIsLoading } = useState(false);
+  const { 0: error, 1: setError } = useState<string | null>(null);
+  const { 0: showPreview, 1: setShowPreview } = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,12 +29,12 @@ export default function CreateNewsletterPage() {
     setError(null);
 
     if (!formData.subject.trim()) {
-      setError('Тема рассылки обязательна для заполнения');
+      setError("Тема рассылки обязательна для заполнения");
       return;
     }
 
     if (!formData.content.trim()) {
-      setError('Содержание рассылки обязательно для заполнения');
+      setError("Содержание рассылки обязательно для заполнения");
       return;
     }
 
@@ -44,21 +44,21 @@ export default function CreateNewsletterPage() {
       const result = await adminApi.newsletters.create(formData);
 
       if (result.success) {
-        toast.success('Рассылка успешно создана!');
-        router.push('/admin/newsletter');
+        toast.success("Рассылка успешно создана!");
+        router.push("/admin/newsletter");
       } else {
-        setError(result.error || 'Не удалось создать рассылку');
+        setError(result.error || "Не удалось создать рассылку");
       }
     } catch (error) {
-      console.error('Error creating newsletter:', error);
-      setError('Произошла ошибка при создании рассылки');
+      console.error("Error creating newsletter:", error);
+      setError("Произошла ошибка при создании рассылки");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleContentChange = (content: string) => {
-    setFormData(prev => ({ ...prev, content }));
+    setFormData((prev) => ({ ...prev, content }));
   };
 
   return (
@@ -100,7 +100,10 @@ export default function CreateNewsletterPage() {
                     id="subject"
                     value={formData.subject}
                     onChange={(e) =>
-                      setFormData(prev => ({ ...prev, subject: e.target.value }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        subject: e.target.value,
+                      }))
                     }
                     placeholder="Например: Новости института за месяц"
                     required
@@ -109,13 +112,18 @@ export default function CreateNewsletterPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="scheduledAt">Запланировать отправку (необязательно)</Label>
+                  <Label htmlFor="scheduledAt">
+                    Запланировать отправку (необязательно)
+                  </Label>
                   <Input
                     id="scheduledAt"
                     type="datetime-local"
                     value={formData.scheduledAt}
                     onChange={(e) =>
-                      setFormData(prev => ({ ...prev, scheduledAt: e.target.value }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        scheduledAt: e.target.value,
+                      }))
                     }
                     disabled={isLoading}
                   />
@@ -142,7 +150,7 @@ export default function CreateNewsletterPage() {
                       disabled={isLoading}
                     >
                       <Eye className="mr-2 h-4 w-4" />
-                      {showPreview ? 'Скрыть' : 'Предварительный просмотр'}
+                      {showPreview ? "Скрыть" : "Предварительный просмотр"}
                     </Button>
                   </div>
 
@@ -157,7 +165,9 @@ export default function CreateNewsletterPage() {
                     </Button>
 
                     <Button type="submit" disabled={isLoading}>
-                      {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {isLoading && (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      )}
                       <Save className="mr-2 h-4 w-4" />
                       Сохранить рассылку
                     </Button>
@@ -175,14 +185,14 @@ export default function CreateNewsletterPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="text-sm">
-                <strong>Статус:</strong>{' '}
+                <strong>Статус:</strong>{" "}
                 <span className="text-muted-foreground">
-                  {formData.scheduledAt ? 'Запланирована' : 'Черновик'}
+                  {formData.scheduledAt ? "Запланирована" : "Черновик"}
                 </span>
               </div>
-              
+
               <div className="text-sm">
-                <strong>Получатели:</strong>{' '}
+                <strong>Получатели:</strong>{" "}
                 <span className="text-muted-foreground">
                   Все активные подписчики
                 </span>
@@ -190,9 +200,9 @@ export default function CreateNewsletterPage() {
 
               {formData.scheduledAt && (
                 <div className="text-sm">
-                  <strong>Время отправки:</strong>{' '}
+                  <strong>Время отправки:</strong>{" "}
                   <span className="text-muted-foreground">
-                    {new Date(formData.scheduledAt).toLocaleString('ru-RU')}
+                    {new Date(formData.scheduledAt).toLocaleString("ru-RU")}
                   </span>
                 </div>
               )}
@@ -207,12 +217,14 @@ export default function CreateNewsletterPage() {
               <CardContent>
                 <div className="border rounded-lg p-4 bg-muted/50">
                   <div className="text-sm font-semibold border-b pb-2 mb-3">
-                    {formData.subject || 'Без темы'}
+                    {formData.subject || "Без темы"}
                   </div>
-                  <div 
+                  <div
                     className="text-sm prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{ 
-                      __html: formData.content || '<p class="text-muted-foreground">Содержание не указано</p>' 
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        formData.content ||
+                        '<p class="text-muted-foreground">Содержание не указано</p>',
                     }}
                   />
                 </div>

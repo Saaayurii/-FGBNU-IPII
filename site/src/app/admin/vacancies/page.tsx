@@ -1,13 +1,23 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Plus, Briefcase, Calendar, MapPin, Edit, Trash2, Search, Filter, TrendingUp } from 'lucide-react';
-import Link from 'next/link';
-import { toast } from 'sonner';
-import { adminApi } from '@/lib/core';
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Plus,
+  Briefcase,
+  Calendar,
+  MapPin,
+  Edit,
+  Trash2,
+  Search,
+  Filter,
+  TrendingUp,
+} from "lucide-react";
+import Link from "next/link";
+import { toast } from "sonner";
+import { adminApi } from "@/lib/core";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,15 +28,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 interface Vacancy {
   id: string;
@@ -42,11 +52,13 @@ interface Vacancy {
 }
 
 export default function VacanciesPage() {
-  const [vacancies, setVacancies] = useState<Vacancy[]>([]);
-  const [filteredVacancies, setFilteredVacancies] = useState<Vacancy[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const { 0: vacancies, 1: setVacancies } = useState<Vacancy[]>([]);
+  const { 0: filteredVacancies, 1: setFilteredVacancies } = useState<Vacancy[]>(
+    []
+  );
+  const { 0: isLoading, 1: setIsLoading } = useState(true);
+  const { 0: searchTerm, 1: setSearchTerm } = useState("");
+  const { 0: statusFilter, 1: setStatusFilter } = useState("all");
 
   useEffect(() => {
     fetchVacancies();
@@ -54,21 +66,24 @@ export default function VacanciesPage() {
 
   useEffect(() => {
     let filtered = vacancies;
-    
+
     if (searchTerm) {
-      filtered = filtered.filter(vacancy => 
-        vacancy.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        vacancy.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        vacancy.location.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (vacancy) =>
+          vacancy.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          vacancy.description
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          vacancy.location.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(vacancy => 
-        statusFilter === 'active' ? vacancy.isActive : !vacancy.isActive
+
+    if (statusFilter !== "all") {
+      filtered = filtered.filter((vacancy) =>
+        statusFilter === "active" ? vacancy.isActive : !vacancy.isActive
       );
     }
-    
+
     setFilteredVacancies(filtered);
   }, [vacancies, searchTerm, statusFilter]);
 
@@ -78,8 +93,8 @@ export default function VacanciesPage() {
       setVacancies(data);
       setFilteredVacancies(data);
     } catch (error) {
-      console.error('Error fetching vacancies:', error);
-      toast.error('Произошла ошибка при загрузке вакансий');
+      console.error("Error fetching vacancies:", error);
+      toast.error("Произошла ошибка при загрузке вакансий");
     } finally {
       setIsLoading(false);
     }
@@ -88,22 +103,24 @@ export default function VacanciesPage() {
   const handleDelete = async (id: string) => {
     try {
       await adminApi.vacancies.delete(id);
-      toast.success('Вакансия удалена');
+      toast.success("Вакансия удалена");
       fetchVacancies();
     } catch (error) {
-      console.error('Error deleting vacancy:', error);
-      toast.error('Произошла ошибка при удалении вакансии');
+      console.error("Error deleting vacancy:", error);
+      toast.error("Произошла ошибка при удалении вакансии");
     }
   };
 
   const toggleStatus = async (id: string, isActive: boolean) => {
     try {
       await adminApi.vacancies.toggleStatus(id, { isActive: !isActive });
-      toast.success(`Вакансия ${!isActive ? 'активирована' : 'деактивирована'}`);
+      toast.success(
+        `Вакансия ${!isActive ? "активирована" : "деактивирована"}`
+      );
       fetchVacancies();
     } catch (error) {
-      console.error('Error updating vacancy status:', error);
-      toast.error('Произошла ошибка при изменении статуса');
+      console.error("Error updating vacancy status:", error);
+      toast.error("Произошла ошибка при изменении статуса");
     }
   };
 
@@ -113,7 +130,9 @@ export default function VacanciesPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-foreground">Вакансии</h1>
-            <p className="text-muted-foreground">Управление вакансиями института</p>
+            <p className="text-muted-foreground">
+              Управление вакансиями института
+            </p>
           </div>
         </div>
         <div className="grid gap-4">
@@ -136,13 +155,16 @@ export default function VacanciesPage() {
 
   const stats = {
     total: vacancies.length,
-    active: vacancies.filter(v => v.isActive).length,
-    inactive: vacancies.filter(v => !v.isActive).length,
-    thisMonth: vacancies.filter(v => {
+    active: vacancies.filter((v) => v.isActive).length,
+    inactive: vacancies.filter((v) => !v.isActive).length,
+    thisMonth: vacancies.filter((v) => {
       const created = new Date(v.createdAt);
       const now = new Date();
-      return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear();
-    }).length
+      return (
+        created.getMonth() === now.getMonth() &&
+        created.getFullYear() === now.getFullYear()
+      );
+    }).length,
   };
 
   return (
@@ -169,7 +191,9 @@ export default function VacanciesPage() {
             <div className="flex items-center">
               <Briefcase className="h-8 w-8 text-blue-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-muted-foreground">Всего</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Всего
+                </p>
                 <p className="text-2xl font-bold">{stats.total}</p>
               </div>
             </div>
@@ -180,7 +204,9 @@ export default function VacanciesPage() {
             <div className="flex items-center">
               <TrendingUp className="h-8 w-8 text-green-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-muted-foreground">Активные</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Активные
+                </p>
                 <p className="text-2xl font-bold">{stats.active}</p>
               </div>
             </div>
@@ -191,7 +217,9 @@ export default function VacanciesPage() {
             <div className="flex items-center">
               <Calendar className="h-8 w-8 text-orange-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-muted-foreground">За месяц</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  За месяц
+                </p>
                 <p className="text-2xl font-bold">{stats.thisMonth}</p>
               </div>
             </div>
@@ -202,7 +230,9 @@ export default function VacanciesPage() {
             <div className="flex items-center">
               <Filter className="h-8 w-8 text-gray-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-muted-foreground">Неактивные</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Неактивные
+                </p>
                 <p className="text-2xl font-bold">{stats.inactive}</p>
               </div>
             </div>
@@ -240,19 +270,20 @@ export default function VacanciesPage() {
       </Card>
 
       {filteredVacancies.length === 0 && !isLoading ? (
-        searchTerm || statusFilter !== 'all' ? (
+        searchTerm || statusFilter !== "all" ? (
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-12">
               <Search className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-semibold mb-2">Ничего не найдено</h3>
               <p className="text-muted-foreground text-center mb-4">
-                По вашему запросу не найдено ни одной вакансии. Попробуйте изменить критерии поиска.
+                По вашему запросу не найдено ни одной вакансии. Попробуйте
+                изменить критерии поиска.
               </p>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => {
-                  setSearchTerm('');
-                  setStatusFilter('all');
+                  setSearchTerm("");
+                  setStatusFilter("all");
                 }}
               >
                 Сбросить фильтры
@@ -260,21 +291,22 @@ export default function VacanciesPage() {
             </CardContent>
           </Card>
         ) : vacancies.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Briefcase className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Нет вакансий</h3>
-            <p className="text-muted-foreground text-center mb-4">
-              Вы еще не создали ни одной вакансии. Создайте первую вакансию для привлечения талантов.
-            </p>
-            <Button asChild>
-              <Link href="/admin/vacancies/create">
-                <Plus className="h-4 w-4 mr-2" />
-                Создать вакансию
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <Briefcase className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Нет вакансий</h3>
+              <p className="text-muted-foreground text-center mb-4">
+                Вы еще не создали ни одной вакансии. Создайте первую вакансию
+                для привлечения талантов.
+              </p>
+              <Button asChild>
+                <Link href="/admin/vacancies/create">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Создать вакансию
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
         ) : null
       ) : (
         <div className="grid gap-4">
@@ -290,12 +322,14 @@ export default function VacanciesPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <CardTitle className="text-lg">{vacancy.title}</CardTitle>
-                      <Badge 
+                      <Badge
                         variant={vacancy.isActive ? "default" : "secondary"}
                         className="cursor-pointer"
-                        onClick={() => toggleStatus(vacancy.id, vacancy.isActive)}
+                        onClick={() =>
+                          toggleStatus(vacancy.id, vacancy.isActive)
+                        }
                       >
-                        {vacancy.isActive ? 'Активна' : 'Неактивна'}
+                        {vacancy.isActive ? "Активна" : "Неактивна"}
                       </Badge>
                     </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -305,11 +339,11 @@ export default function VacanciesPage() {
                       </div>
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
-                        {new Date(vacancy.createdAt).toLocaleDateString('ru-RU')}
+                        {new Date(vacancy.createdAt).toLocaleDateString(
+                          "ru-RU"
+                        )}
                       </div>
-                      <div className="text-sm">
-                        {vacancy.employment}
-                      </div>
+                      <div className="text-sm">{vacancy.employment}</div>
                       {vacancy.salary && (
                         <div className="text-sm font-medium">
                           {vacancy.salary}
@@ -335,7 +369,8 @@ export default function VacanciesPage() {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Удалить вакансию?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Это действие нельзя отменить. Вакансия &quot;{vacancy.title}&quot; будет удалена навсегда.
+                            Это действие нельзя отменить. Вакансия &quot;
+                            {vacancy.title}&quot; будет удалена навсегда.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>

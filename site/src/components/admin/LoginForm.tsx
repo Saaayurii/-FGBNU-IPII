@@ -17,12 +17,12 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Lock, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [mounted, setMounted] = useState(false);
+export var LoginForm = () => {
+  const { 0: email, 1: setEmail } = useState("");
+  const { 0: password, 1: setPassword } = useState("");
+  const { 0: isLoading, 1: setIsLoading } = useState(false);
+  const { 0: error, 1: setError } = useState("");
+  const { 0: mounted, 1: setMounted } = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -69,7 +69,9 @@ export function LoginForm() {
           <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
             <Lock className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-5xl font-bold text-gray-900 py-4">Вход в админку</h2>
+          <h2 className="text-5xl font-bold text-gray-900 py-4">
+            Вход в админку
+          </h2>
           <p className="mt-2 text-sm text-gray-600">
             СМУ - Административная панель
           </p>
@@ -145,4 +147,4 @@ export function LoginForm() {
       </div>
     </div>
   );
-}
+};

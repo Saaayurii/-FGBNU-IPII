@@ -1,37 +1,37 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, Loader2, Save } from 'lucide-react';
-import Link from 'next/link';
-import { toast } from 'sonner';
-import { adminApi } from '@/lib/core';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowLeft, Loader2, Save } from "lucide-react";
+import Link from "next/link";
+import { toast } from "sonner";
+import { adminApi } from "@/lib/core";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 export default function CreateVacancyPage() {
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    requirements: '',
-    location: '',
-    salary: '',
-    employment: '',
-    isActive: true
+  const { 0: formData, 1: setFormData } = useState({
+    title: "",
+    description: "",
+    requirements: "",
+    location: "",
+    salary: "",
+    employment: "",
+    isActive: true,
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { 0: isLoading, 1: setIsLoading } = useState(false);
+  const { 0: error, 1: setError } = useState<string | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,22 +39,22 @@ export default function CreateVacancyPage() {
     setError(null);
 
     if (!formData.title.trim()) {
-      setError('Заголовок обязателен для заполнения');
+      setError("Заголовок обязателен для заполнения");
       return;
     }
 
     if (!formData.description.trim()) {
-      setError('Описание обязательно для заполнения');
+      setError("Описание обязательно для заполнения");
       return;
     }
 
     if (!formData.location.trim()) {
-      setError('Местоположение обязательно для заполнения');
+      setError("Местоположение обязательно для заполнения");
       return;
     }
 
     if (!formData.employment) {
-      setError('Тип занятости обязателен для заполнения');
+      setError("Тип занятости обязателен для заполнения");
       return;
     }
 
@@ -64,14 +64,14 @@ export default function CreateVacancyPage() {
       const result = await adminApi.vacancies.create(formData);
 
       if (result.success) {
-        toast.success('Вакансия успешно создана!');
-        router.push('/admin/vacancies');
+        toast.success("Вакансия успешно создана!");
+        router.push("/admin/vacancies");
       } else {
-        setError(result.error || 'Не удалось создать вакансию');
+        setError(result.error || "Не удалось создать вакансию");
       }
     } catch (error) {
-      console.error('Error creating vacancy:', error);
-      setError('Произошла ошибка при создании вакансии');
+      console.error("Error creating vacancy:", error);
+      setError("Произошла ошибка при создании вакансии");
     } finally {
       setIsLoading(false);
     }
@@ -116,7 +116,10 @@ export default function CreateVacancyPage() {
                     id="title"
                     value={formData.title}
                     onChange={(e) =>
-                      setFormData(prev => ({ ...prev, title: e.target.value }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        title: e.target.value,
+                      }))
                     }
                     placeholder="Например: Младший научный сотрудник"
                     required
@@ -130,7 +133,10 @@ export default function CreateVacancyPage() {
                     id="location"
                     value={formData.location}
                     onChange={(e) =>
-                      setFormData(prev => ({ ...prev, location: e.target.value }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        location: e.target.value,
+                      }))
                     }
                     placeholder="г. Донецк"
                     required
@@ -143,7 +149,7 @@ export default function CreateVacancyPage() {
                   <Select
                     value={formData.employment}
                     onValueChange={(value) =>
-                      setFormData(prev => ({ ...prev, employment: value }))
+                      setFormData((prev) => ({ ...prev, employment: value }))
                     }
                     disabled={isLoading}
                   >
@@ -151,11 +157,19 @@ export default function CreateVacancyPage() {
                       <SelectValue placeholder="Выберите тип занятости" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Полная занятость">Полная занятость</SelectItem>
-                      <SelectItem value="Частичная занятость">Частичная занятость</SelectItem>
-                      <SelectItem value="Проектная работа">Проектная работа</SelectItem>
+                      <SelectItem value="Полная занятость">
+                        Полная занятость
+                      </SelectItem>
+                      <SelectItem value="Частичная занятость">
+                        Частичная занятость
+                      </SelectItem>
+                      <SelectItem value="Проектная работа">
+                        Проектная работа
+                      </SelectItem>
                       <SelectItem value="Стажировка">Стажировка</SelectItem>
-                      <SelectItem value="Удаленная работа">Удаленная работа</SelectItem>
+                      <SelectItem value="Удаленная работа">
+                        Удаленная работа
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -166,7 +180,10 @@ export default function CreateVacancyPage() {
                     id="salary"
                     value={formData.salary}
                     onChange={(e) =>
-                      setFormData(prev => ({ ...prev, salary: e.target.value }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        salary: e.target.value,
+                      }))
                     }
                     placeholder="Например: от 40 000 руб."
                     disabled={isLoading}
@@ -181,7 +198,10 @@ export default function CreateVacancyPage() {
                     id="description"
                     value={formData.description}
                     onChange={(e) =>
-                      setFormData(prev => ({ ...prev, description: e.target.value }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        description: e.target.value,
+                      }))
                     }
                     placeholder="Подробное описание вакансии, обязанности, условия..."
                     required
@@ -196,7 +216,10 @@ export default function CreateVacancyPage() {
                     id="requirements"
                     value={formData.requirements}
                     onChange={(e) =>
-                      setFormData(prev => ({ ...prev, requirements: e.target.value }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        requirements: e.target.value,
+                      }))
                     }
                     placeholder="Требования к кандидату: образование, опыт, навыки..."
                     disabled={isLoading}
@@ -212,7 +235,10 @@ export default function CreateVacancyPage() {
                 id="isActive"
                 checked={formData.isActive}
                 onChange={(e) =>
-                  setFormData(prev => ({ ...prev, isActive: e.target.checked }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    isActive: e.target.checked,
+                  }))
                 }
                 disabled={isLoading}
                 className="h-4 w-4"

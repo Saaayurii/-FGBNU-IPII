@@ -1,13 +1,9 @@
 "use client";
 
-import { useState } from 'react';
-import { useTheme } from 'next-themes';
-import { Button } from '@/components/ui/button';
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+import { useState } from "react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Menu,
   Sun,
@@ -16,10 +12,10 @@ import {
   Home,
   Newspaper,
   Mail,
-  Info
-} from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+  Info,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface HeaderProps {
   onNewsClick?: () => void;
@@ -28,18 +24,20 @@ interface HeaderProps {
 
 export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
   const { theme, setTheme } = useTheme();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { 0: mobileMenuOpen, 1: setMobileMenuOpen } = useState(false);
   const pathname = usePathname();
 
   const handleContactsClick = () => {
     onContactsClick
       ? onContactsClick()
-      : pathname !== '/contact'
-        ? document.querySelector('footer')?.scrollIntoView({ behavior: 'smooth' })
+      : pathname !== "/contact"
+        ? document
+            .querySelector("footer")
+            ?.scrollIntoView({ behavior: "smooth" })
         : null;
 
     setMobileMenuOpen(false);
-  };  
+  };
 
   const handleNewsClick = () => {
     if (onNewsClick) {
@@ -53,21 +51,21 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
   };
 
   const navigationItems = [
-    { name: 'Главная', href: '/', icon: Home },
+    { name: "Главная", href: "/", icon: Home },
     {
-      name: 'Новости',
-      href: '/news',
+      name: "Новости",
+      href: "/news",
       onClick: handleNewsClick,
       icon: Newspaper,
-      isLink: pathname === '/news'
+      isLink: pathname === "/news",
     },
-    { name: 'О нас', href: '/about', icon: Info },
+    { name: "О нас", href: "/about", icon: Info },
     {
-      name: 'Контакты',
-      href: '/contact',
+      name: "Контакты",
+      href: "/contact",
       onClick: handleContactsClick,
       icon: Mail,
-      isLink: pathname === '/contact'
+      isLink: pathname === "/contact",
     },
   ];
 
@@ -97,7 +95,7 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
           >
             Главная
           </Link>
-          {pathname === '/news' ? (
+          {pathname === "/news" ? (
             <Link
               href="/news"
               className="text-muted-foreground hover:text-foreground transition-colors"
@@ -118,7 +116,7 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
           >
             О нас
           </Link>
-          {pathname === '/contact' ? (
+          {pathname === "/contact" ? (
             <Link
               href="/contact"
               className="text-muted-foreground hover:text-foreground transition-colors"
@@ -167,7 +165,7 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
                 <div className="space-y-2">
                   {navigationItems.map((item) => (
                     <div key={item.name}>
-                      {(item.href && (item.isLink || !item.onClick)) ? (
+                      {item.href && (item.isLink || !item.onClick) ? (
                         <Link
                           href={item.href}
                           onClick={() => setMobileMenuOpen(false)}

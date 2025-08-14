@@ -1,29 +1,29 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
-} from '@/components/ui/card';
+  CardTitle,
+} from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Search,
   Plus,
@@ -31,16 +31,16 @@ import {
   Edit,
   Trash2,
   Eye,
-  EyeOff
-} from 'lucide-react';
-import Link from 'next/link';
-import { ImagePreview } from './ImagePreview';
+  EyeOff,
+} from "lucide-react";
+import Link from "next/link";
+import { ImagePreview } from "./ImagePreview";
 
 interface Post {
   id: string;
   title: string;
   excerpt: string;
-  category: 'NEWS' | 'VACANCY' | 'ANNOUNCEMENT' | 'EVENT';
+  category: "NEWS" | "VACANCY" | "ANNOUNCEMENT" | "EVENT";
   imageUrl?: string;
   published: boolean;
   createdAt: string;
@@ -54,43 +54,75 @@ interface PostsListProps {
   isLoading?: boolean;
 }
 
-export function PostsList({ posts, onDelete, onTogglePublished, isLoading = false }: PostsListProps) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'NEWS' | 'VACANCY' | 'ANNOUNCEMENT' | 'EVENT'>('ALL');
-  const [statusFilter, setStatusFilter] = useState<'ALL' | 'PUBLISHED' | 'DRAFT'>('ALL');
+export var PostsList = ({
+  posts,
+  onDelete,
+  onTogglePublished,
+  isLoading = false,
+}: PostsListProps) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState<
+    "ALL" | "NEWS" | "VACANCY" | "ANNOUNCEMENT" | "EVENT"
+  >("ALL");
+  const [statusFilter, setStatusFilter] = useState<
+    "ALL" | "PUBLISHED" | "DRAFT"
+  >("ALL");
 
-  const filteredPosts = posts.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredPosts = posts.filter((post) => {
+    const matchesSearch =
+      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesCategory = categoryFilter === 'ALL' || post.category === categoryFilter;
+    const matchesCategory =
+      categoryFilter === "ALL" || post.category === categoryFilter;
 
-    const matchesStatus = statusFilter === 'ALL' || 
-                         (statusFilter === 'PUBLISHED' && post.published) ||
-                         (statusFilter === 'DRAFT' && !post.published);
+    const matchesStatus =
+      statusFilter === "ALL" ||
+      (statusFilter === "PUBLISHED" && post.published) ||
+      (statusFilter === "DRAFT" && !post.published);
 
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
   const getCategoryBadge = (category: string) => {
     switch (category) {
-      case 'NEWS':
-        return <Badge variant="default" className="bg-blue-100 text-blue-800">Новости</Badge>;
-      case 'VACANCY':
-        return <Badge variant="default" className="bg-green-100 text-green-800">Вакансии</Badge>;
-      case 'ANNOUNCEMENT':
-        return <Badge variant="default" className="bg-purple-100 text-purple-800">Объявления</Badge>;
-      case 'EVENT':
-        return <Badge variant="default" className="bg-orange-100 text-orange-800">События</Badge>;
+      case "NEWS":
+        return (
+          <Badge variant="default" className="bg-blue-100 text-blue-800">
+            Новости
+          </Badge>
+        );
+      case "VACANCY":
+        return (
+          <Badge variant="default" className="bg-green-100 text-green-800">
+            Вакансии
+          </Badge>
+        );
+      case "ANNOUNCEMENT":
+        return (
+          <Badge variant="default" className="bg-purple-100 text-purple-800">
+            Объявления
+          </Badge>
+        );
+      case "EVENT":
+        return (
+          <Badge variant="default" className="bg-orange-100 text-orange-800">
+            События
+          </Badge>
+        );
       default:
         return <Badge variant="outline">{category}</Badge>;
     }
   };
 
   const getStatusBadge = (published: boolean) => {
-    return published 
-      ? <Badge variant="default" className="bg-green-100 text-green-800">Опубликовано</Badge>
-      : <Badge variant="secondary">Черновик</Badge>;
+    return published ? (
+      <Badge variant="default" className="bg-green-100 text-green-800">
+        Опубликовано
+      </Badge>
+    ) : (
+      <Badge variant="secondary">Черновик</Badge>
+    );
   };
 
   const handleDelete = async (id: string, title: string) => {
@@ -113,7 +145,10 @@ export function PostsList({ posts, onDelete, onTogglePublished, isLoading = fals
           />
         </div>
 
-        <Select value={categoryFilter} onValueChange={(value: any) => setCategoryFilter(value)}>
+        <Select
+          value={categoryFilter}
+          onValueChange={(value: any) => setCategoryFilter(value)}
+        >
           <SelectTrigger className="w-[150px]">
             <SelectValue placeholder="Категория" />
           </SelectTrigger>
@@ -126,7 +161,10 @@ export function PostsList({ posts, onDelete, onTogglePublished, isLoading = fals
           </SelectContent>
         </Select>
 
-        <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
+        <Select
+          value={statusFilter}
+          onValueChange={(value: any) => setStatusFilter(value)}
+        >
           <SelectTrigger className="w-[150px]">
             <SelectValue placeholder="Статус" />
           </SelectTrigger>
@@ -151,25 +189,29 @@ export function PostsList({ posts, onDelete, onTogglePublished, isLoading = fals
           <CardContent className="py-12">
             <div className="text-center text-gray-500">
               <div className="text-lg font-medium mb-2">
-                {searchTerm || categoryFilter !== 'ALL' || statusFilter !== 'ALL' 
-                  ? 'Ничего не найдено' 
-                  : 'Нет записей'
-                }
+                {searchTerm ||
+                categoryFilter !== "ALL" ||
+                statusFilter !== "ALL"
+                  ? "Ничего не найдено"
+                  : "Нет записей"}
               </div>
               <p className="text-sm text-gray-400 mb-4">
-                {searchTerm || categoryFilter !== 'ALL' || statusFilter !== 'ALL'
-                  ? 'Попробуйте изменить фильтры или поиск'
-                  : 'Добавьте первую запись'
-                }
+                {searchTerm ||
+                categoryFilter !== "ALL" ||
+                statusFilter !== "ALL"
+                  ? "Попробуйте изменить фильтры или поиск"
+                  : "Добавьте первую запись"}
               </p>
-              {(!searchTerm && categoryFilter === 'ALL' && statusFilter === 'ALL') && (
-                <Link href="/admin/news/create">
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Добавить запись
-                  </Button>
-                </Link>
-              )}
+              {!searchTerm &&
+                categoryFilter === "ALL" &&
+                statusFilter === "ALL" && (
+                  <Link href="/admin/news/create">
+                    <Button>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Добавить запись
+                    </Button>
+                  </Link>
+                )}
             </div>
           </CardContent>
         </Card>
@@ -213,7 +255,9 @@ export function PostsList({ posts, onDelete, onTogglePublished, isLoading = fals
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => onTogglePublished(post.id, !post.published)}
+                            onClick={() =>
+                              onTogglePublished(post.id, !post.published)
+                            }
                           >
                             {post.published ? (
                               <>
@@ -249,12 +293,14 @@ export function PostsList({ posts, onDelete, onTogglePublished, isLoading = fals
                       {getStatusBadge(post.published)}
 
                       <div className="text-xs text-gray-500">
-                        Создано: {new Date(post.createdAt).toLocaleDateString('ru-RU')}
+                        Создано:{" "}
+                        {new Date(post.createdAt).toLocaleDateString("ru-RU")}
                       </div>
 
                       {post.updatedAt !== post.createdAt && (
                         <div className="text-xs text-gray-500">
-                          Обновлено: {new Date(post.updatedAt).toLocaleDateString('ru-RU')}
+                          Обновлено:{" "}
+                          {new Date(post.updatedAt).toLocaleDateString("ru-RU")}
                         </div>
                       )}
                     </div>
@@ -267,4 +313,4 @@ export function PostsList({ posts, onDelete, onTogglePublished, isLoading = fals
       )}
     </div>
   );
-}
+};
