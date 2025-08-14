@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ArrowLeft, Loader2, Save, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { adminApi } from '@/lib/core';
 import { RichTextEditor } from '@/components/admin/RichTextEditor';
 
 export default function CreateNewsletterPage() {
@@ -40,20 +41,13 @@ export default function CreateNewsletterPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/admin/newsletters', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const result = await adminApi.newsletters.create(formData);
 
-      if (response.ok) {
+      if (result.success) {
         toast.success('Рассылка успешно создана!');
         router.push('/admin/newsletter');
       } else {
-        const data = await response.json();
-        setError(data.error || 'Не удалось создать рассылку');
+        setError(result.error || 'Не удалось создать рассылку');
       }
     } catch (error) {
       console.error('Error creating newsletter:', error);

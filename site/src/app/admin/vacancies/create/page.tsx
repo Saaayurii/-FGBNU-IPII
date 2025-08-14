@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ArrowLeft, Loader2, Save } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { adminApi } from '@/lib/core';
 import {
   Select,
   SelectContent,
@@ -60,20 +61,13 @@ export default function CreateVacancyPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/admin/vacancies', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const result = await adminApi.vacancies.create(formData);
 
-      if (response.ok) {
+      if (result.success) {
         toast.success('Вакансия успешно создана!');
         router.push('/admin/vacancies');
       } else {
-        const data = await response.json();
-        setError(data.error || 'Не удалось создать вакансию');
+        setError(result.error || 'Не удалось создать вакансию');
       }
     } catch (error) {
       console.error('Error creating vacancy:', error);

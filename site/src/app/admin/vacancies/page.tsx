@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Briefcase, Calendar, MapPin, Edit, Trash2, Search, Filter, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { adminApi } from '@/lib/core';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -73,14 +74,9 @@ export default function VacanciesPage() {
 
   const fetchVacancies = async () => {
     try {
-      const response = await fetch('/api/admin/vacancies');
-      if (response.ok) {
-        const data = await response.json();
-        setVacancies(data);
-        setFilteredVacancies(data);
-      } else {
-        toast.error('Не удалось загрузить вакансии');
-      }
+      const data = await adminApi.vacancies.getAll();
+      setVacancies(data);
+      setFilteredVacancies(data);
     } catch (error) {
       console.error('Error fetching vacancies:', error);
       toast.error('Произошла ошибка при загрузке вакансий');
@@ -91,16 +87,9 @@ export default function VacanciesPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`/api/admin/vacancies/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        toast.success('Вакансия удалена');
-        fetchVacancies();
-      } else {
-        toast.error('Не удалось удалить вакансию');
-      }
+      await adminApi.vacancies.delete(id);
+      toast.success('Вакансия удалена');
+      fetchVacancies();
     } catch (error) {
       console.error('Error deleting vacancy:', error);
       toast.error('Произошла ошибка при удалении вакансии');
@@ -109,20 +98,9 @@ export default function VacanciesPage() {
 
   const toggleStatus = async (id: string, isActive: boolean) => {
     try {
-      const response = await fetch(`/api/admin/vacancies/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ isActive: !isActive }),
-      });
-
-      if (response.ok) {
-        toast.success(`Вакансия ${!isActive ? 'активирована' : 'деактивирована'}`);
-        fetchVacancies();
-      } else {
-        toast.error('Не удалось изменить статус вакансии');
-      }
+      await adminApi.vacancies.toggleStatus(id, { isActive: !isActive });
+      toast.success(`Вакансия ${!isActive ? 'активирована' : 'деактивирована'}`);
+      fetchVacancies();
     } catch (error) {
       console.error('Error updating vacancy status:', error);
       toast.error('Произошла ошибка при изменении статуса');
