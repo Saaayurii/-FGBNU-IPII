@@ -22,14 +22,14 @@ export const UPLOAD_CONFIG = {
 export async function validateFile(file: File, type: 'images' | 'slider') {
   const config = UPLOAD_CONFIG[type];
   
-  // @>25@:0 @07<5@0
+  // Проверка размера
   if (file.size > config.maxSize) {
-    throw new Error(`$09; A;8H:>< 1>;LH>9. 0:A8<0;L=K9 @07<5@: ${config.maxSize / 1024 / 1024}MB`);
+    throw new Error(`Файл слишком большой. Максимальный размер: ${config.maxSize / 1024 / 1024}MB`);
   }
   
-  // @>25@:0 B8?0
+  // Проверка типа
   if (!config.allowedTypes.includes(file.type)) {
-    throw new Error(`5?>445@68205<K9 B8? D09;0.  07@5H5=K: ${config.allowedTypes.join(', ')}`);
+    throw new Error(`Неподдерживаемый тип файла. Разрешены: ${config.allowedTypes.join(', ')}`);
   }
   
   return true;
@@ -79,7 +79,7 @@ export async function deleteFile(filePath: string): Promise<boolean> {
     await fs.unlink(fullPath);
     return true;
   } catch (error) {
-    console.error('H81:0 C40;5=8O D09;0:', error);
+    console.error('Ошибка удаления файла:', error);
     return false;
   }
 }
