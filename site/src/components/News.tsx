@@ -73,9 +73,9 @@ export function News({ onViewAllNews, posts = [], onReadNews }: NewsProps) {
   };
 
   return (
-    <section className="py-16 bg-gradient-to-b from-[#f8fafc] via-[#f8fafc] to-background">
+    <section className="py-16 bg-[#f8fafc]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center space-y-4 mb-16">
+        <div className="text-center space-y-4 mb-10">
           <h2 className="text-3xl md:text-4xl font-bold">
             Новости и события
           </h2>
@@ -86,52 +86,42 @@ export function News({ onViewAllNews, posts = [], onReadNews }: NewsProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {displayPosts.map((post) => (
-            <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-video bg-muted relative">
-                {post.imageUrl ? (
+            <Card key={post.id} className="group block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col py-0 pb-4 cursor-pointer">
+              {post.imageUrl ? (
+                <div className="relative aspect-video overflow-hidden bg-gray-100">
                   <Image
                     src={post.imageUrl}
                     alt={post.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    width={500}
+                    height={281}
                   />
-                ) : (
-                  <div className="w-full h-full bg-muted flex items-center justify-center">
-                    <span className="text-muted-foreground">Нет изображения</span>
-                  </div>
-                )}
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="flex items-center justify-between">
-                  <Badge variant="secondary">{getCategoryLabel(post.category)}</Badge>
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <Calendar className="h-3 w-3" />
-                    <span>
-                      {format(new Date(post.createdAt), "d MMMM yyyy", { locale: ru })}
-                    </span>
+                  <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                    {post.category}
                   </div>
                 </div>
-                
-                <h3 className="font-semibold line-clamp-2 text-lg">{post.title}</h3>
-                <p className="text-muted-foreground text-sm line-clamp-3">{post.description}</p>
-                
-                <div className="flex items-center justify-between pt-4">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <User className="h-3 w-3" />
-                    <span className="line-clamp-1">
-                      {post.author?.name || 'Администратор'}
-                    </span>
-                  </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => onReadNews?.(post)}
-                    className="shrink-0"
-                  >
-                    Читать
-                    <ArrowRight className="h-3 w-3 ml-1" />
-                  </Button>
+              ) : (
+                <div className="w-[100%] h-[200px] bg-muted flex items-center justify-center">
+                  <span className="text-muted-foreground">Нет изображения</span>
+                </div>
+              )}
+
+              <div className="px-4 pb-4">
+                <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors">
+                  {post.title}
+                </h3>
+
+                <time className="block text-sm text-gray-500 mb-3">
+                  {format(new Date(post.createdAt), "d MMMM yyyy", { locale: ru })}
+                </time>
+
+                <p className="text-gray-600 line-clamp-2">{post.description}</p>
+
+                <div className="mt-4 flex items-center text-blue-500 font-medium text-sm group-hover:underline" onClick={() => onReadNews?.(post)}>
+                  Читать далее
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </div>
               </div>
             </Card>
@@ -139,8 +129,8 @@ export function News({ onViewAllNews, posts = [], onReadNews }: NewsProps) {
         </div>
 
         {displayPosts.length > 0 && (
-          <div className="text-center mt-16">
-            <Link href="/news" >
+          <div className="text-center mt-10  block m-auto">
+            <Link href="/news" className="bg-blue-600 text-white rounded-md p-5 py-2 hover:bg-blue-800">
               Все новости
             </Link>
           </div>

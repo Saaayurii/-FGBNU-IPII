@@ -68,8 +68,8 @@ export function Hero({ sliderImages = [] }: HeroProps) {
   const activeImages =
     sliderImages.length > 0
       ? sliderImages
-          .filter((img) => img.active)
-          .sort((a, b) => a.order - b.order)
+        .filter((img) => img.active)
+        .sort((a, b) => a.order - b.order)
       : fallbackImages;
 
   const nextSlide = () => {
@@ -98,7 +98,7 @@ export function Hero({ sliderImages = [] }: HeroProps) {
   }, [activeImages.length]);
 
   return (
-    <section className="py-20 md:py-32 bg-gradient-to-b from-background via-background to-[#f8fafc] mb-10">
+    <section className="py-16 md:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-8">
           <div className="space-y-4">
@@ -113,11 +113,11 @@ export function Hero({ sliderImages = [] }: HeroProps) {
             </p>
           </div>
 
-          <div className="mt-16 space-y-8 max-w-full mx-auto px-4 sm:px-6 lg:px-8 text-left">
-            <div className="bg-secondary/30 rounded-lg p-8 space-y-6">
-              <h3 className="text-2xl font-semibold text-center mb-6">
+          <div className="mt-10 space-y-8 max-w-full mx-auto px-4 sm:px-6 lg:px-8 text-left">
+            <div className="rounded-lg pt-8 pb-0 space-y-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-center">
                 О деятельности лаборатории
-              </h3>
+              </h2>
 
               <p className="text-muted-foreground leading-relaxed">
                 Исследования лаборатории проводятся в соответствии с Указом
@@ -157,12 +157,12 @@ export function Hero({ sliderImages = [] }: HeroProps) {
 
             {/* Custom Slider */}
             {activeImages.length > 0 && (
-              <div className="bg-secondary/30 rounded-lg p-6">
-                <h3 className="text-2xl font-semibold text-center mb-6">
+              <div className="rounded-lg pb-4 md:pb-6 pt-0">
+                <h3 className="text-xl md:text-2xl font-semibold text-center mb-6 md:mb-10 mt-6 md:mt-10">
                   Наши исследования в фотографиях
                 </h3>
                 <div className="relative">
-                  <div className="relative h-80 md:h-96 rounded-lg overflow-hidden">
+                  <div className="relative h-64 sm:h-80 md:h-96 lg:h-115 rounded-lg overflow-hidden">
                     <div
                       className="flex transition-transform duration-500 ease-in-out h-full"
                       style={{
@@ -179,11 +179,11 @@ export function Hero({ sliderImages = [] }: HeroProps) {
                             alt={image.title || `Слайд ${index + 1}`}
                             fill
                             className="object-cover"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 60vw"
                           />
                           {image.title && (
-                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
-                              <h4 className="text-white font-semibold text-lg">
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 md:p-6">
+                              <h4 className="text-white font-semibold text-base md:text-lg">
                                 {image.title}
                               </h4>
                             </div>
@@ -197,30 +197,29 @@ export function Hero({ sliderImages = [] }: HeroProps) {
                       <>
                         <button
                           onClick={prevSlide}
-                          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all"
+                          className="absolute left-1 sm:left-2 md:left-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 md:w-10 md:h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all cursor-pointer"
                           aria-label="Предыдущий слайд"
                         >
-                          <ChevronLeft className="h-5 w-5 text-gray-600" />
+                          <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-gray-600" />
                         </button>
                         <button
                           onClick={nextSlide}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all"
+                          className="absolute right-1 sm:right-2 md:right-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 md:w-10 md:h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all cursor-pointer"
                           aria-label="Следующий слайд"
                         >
-                          <ChevronRight className="h-5 w-5 text-gray-600" />
+                          <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-gray-600" />
                         </button>
 
                         {/* Dots Navigation */}
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                        <div className="absolute bottom-2 md:bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 md:gap-2">
                           {activeImages.map((_, index) => (
                             <button
                               key={index}
                               onClick={() => goToSlide(index)}
-                              className={`w-2 h-2 rounded-full transition-all ${
-                                index === currentSlide
+                              className={`w-2.5 h-2.5 md:w-2 md:h-2 rounded-full transition-all ${index === currentSlide
                                   ? "bg-white"
                                   : "bg-white/50"
-                              }`}
+                                }`}
                               aria-label={`Перейти к слайду ${index + 1}`}
                             />
                           ))}

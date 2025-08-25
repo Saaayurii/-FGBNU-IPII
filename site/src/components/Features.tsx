@@ -45,9 +45,9 @@ export function Features() {
   ];
 
   return (
-    <section className="py-16 bg-gradient-to-b from-[#f8fafc] via-[#f8fafc] to-background">
+    <section className="py-16 bg-[#f8fafc]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center space-y-4 mb-16">
+        <div className="text-center space-y-4 mb-10">
           <h2 className="text-3xl md:text-4xl font-bold">
             Почему выбирают нас
           </h2>
@@ -75,7 +75,7 @@ export function Features() {
         </div>
 
         {/* Дополнительная информация */}
-        <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="bg-secondary/30 rounded-lg p-8 space-y-4">
             <h3 className="text-2xl font-semibold mb-4">Научные функции</h3>
             <ul className="space-y-3 text-muted-foreground">

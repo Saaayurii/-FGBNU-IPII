@@ -9,7 +9,7 @@ export function ContactMap() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-black-900 mb-4">Как нас найти</h2>
-          <p className="text-black-700 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             ФГБНУ "Институт проблем искусственного интеллекта" располагается в центре Донецка
           </p>
         </div>
@@ -17,7 +17,7 @@ export function ContactMap() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Карта */}
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-blue-900">
+            <h3 className="text-xl font-semibold">
               Наше местоположение
             </h3>
             <div
@@ -34,7 +34,7 @@ export function ContactMap() {
           {/* Контактная информация */}
           <div className="space-y-8">
             <div>
-              <h3 className="text-xl font-semibold text-blue-900 mb-6">
+              <h3 className="text-xl font-semibold mb-6">
                 Контактная информация
               </h3>
               <div className="space-y-4">
@@ -43,8 +43,8 @@ export function ContactMap() {
                     <MapPin className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-blue-900">Адрес</h4>
-                    <p className="text-blue-700">
+                    <h4 className="font-semibold">Адрес</h4>
+                    <p>
                       83050, г. Донецк,
                       <br />
                       ул. Артема, 118Б
@@ -57,8 +57,8 @@ export function ContactMap() {
                     <Phone className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-blue-900">Телефон</h4>
-                    <p className="text-blue-700">+7 (XXX) XXX-XX-XX</p>
+                    <h4 className="font-semibold">Телефон</h4>
+                    <p>+7 (XXX) XXX-XX-XX</p>
                   </div>
                 </div>
 
@@ -67,8 +67,8 @@ export function ContactMap() {
                     <Mail className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-blue-900">Email</h4>
-                    <p className="text-blue-700">info@ipii-ai.ru</p>
+                    <h4 className="font-semibold">Email</h4>
+                    <p>info@ipii-ai.ru</p>
                   </div>
                 </div>
 
@@ -77,10 +77,10 @@ export function ContactMap() {
                     <Clock className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-blue-900">
+                    <h4 className="font-semibold">
                       Режим работы
                     </h4>
-                    <div className="text-blue-700">
+                    <div>
                       <p>Понедельник - Пятница: 9:00 - 18:00</p>
                       <p>Суббота - Воскресенье: Выходные</p>
                     </div>
@@ -91,10 +91,10 @@ export function ContactMap() {
 
             {/* Дополнительная информация */}
             <div className="bg-gradient-to-br from-blue-100 to-blue-50 rounded-lg p-6 border border-blue-200">
-              <h4 className="font-semibold text-blue-900 mb-3">
+              <h4 className="font-semibold mb-3">
                 Как добраться
               </h4>
-              <div className="space-y-2 text-sm text-blue-800">
+              <div className="space-y-2 text-sm">
                 <p>
                   • <strong>На общественном транспорте:</strong> автобусы № 5,
                   12, 23 до остановки "Артема"
@@ -111,13 +111,13 @@ export function ContactMap() {
 
             {/* Организационная информация */}
             <div className="border-t border-blue-200 pt-6">
-              <h4 className="font-semibold text-blue-900 mb-3">
+              <h4 className="font-semibold mb-3">
                 Федеральное государственное бюджетное научное учреждение
               </h4>
-              <p className="text-blue-800 font-medium">
+              <p className="font-medium">
                 "Институт проблем искусственного интеллекта"
               </p>
-              <p className="text-sm text-blue-600 mt-2">
+              <p className="text-sm mt-2">
                 Ведущий научно-исследовательский институт в области
                 искусственного интеллекта и машинного обучения
               </p>

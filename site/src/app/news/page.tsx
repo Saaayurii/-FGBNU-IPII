@@ -1,3 +1,5 @@
+'use client'
+
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/ui/Footer";
 import { Filters } from '@/components/news/CategoryFilter';

@@ -16,8 +16,7 @@ import {
   Home,
   Newspaper,
   Mail,
-  Info,
-  Briefcase
+  Info
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -40,7 +39,7 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
         : null;
 
     setMobileMenuOpen(false);
-  };
+  };  
 
   const handleNewsClick = () => {
     if (onNewsClick) {
@@ -58,14 +57,17 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
     {
       name: 'Новости',
       href: '/news',
+      onClick: handleNewsClick,
       icon: Newspaper,
+      isLink: pathname === '/news'
     },
     { name: 'О нас', href: '/about', icon: Info },
-    { name: 'Вакансии', href: '/vacancies', icon: Briefcase },
     {
       name: 'Контакты',
       href: '/contact',
+      onClick: handleContactsClick,
       icon: Mail,
+      isLink: pathname === '/contact'
     },
   ];
 
@@ -95,30 +97,42 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
           >
             Главная
           </Link>
-          <Link
-            href="/news"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Новости
-          </Link>
+          {pathname === '/news' ? (
+            <Link
+              href="/news"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Новости
+            </Link>
+          ) : (
+            <button
+              onClick={handleNewsClick}
+              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              Новости
+            </button>
+          )}
           <Link
             href="/about"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             О нас
           </Link>
-          <Link
-            href="/vacancies"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Вакансии
-          </Link>
-          <Link
-            href="/contact"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Контакты
-          </Link>
+          {pathname === '/contact' ? (
+            <Link
+              href="/contact"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Контакты
+            </Link>
+          ) : (
+            <button
+              onClick={handleContactsClick}
+              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              Контакты
+            </button>
+          )}
         </nav>
 
         {/* Правая часть */}
@@ -150,25 +164,36 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
             <SheetContent side="right" className="w-80">
               <div className="flex flex-col space-y-4 mt-6">
                 {/* Навигация */}
-                <div className="space-y-2 px-5">
+                <div className="space-y-2">
                   {navigationItems.map((item) => (
                     <div key={item.name}>
+                      {(item.href && (item.isLink || !item.onClick)) ? (
                         <Link
                           href={item.href}
+                          onClick={() => setMobileMenuOpen(false)}
                           className="flex items-center space-x-3 px-3 py-2 rounded-md text-base hover:bg-muted transition-colors"
                         >
                           <item.icon className="h-5 w-5" />
                           <span>{item.name}</span>
                         </Link>
+                      ) : (
+                        <button
+                          onClick={item.onClick}
+                          className="flex items-center space-x-3 px-3 py-2 rounded-md text-base hover:bg-muted transition-colors w-full text-left"
+                        >
+                          <item.icon className="h-5 w-5" />
+                          <span>{item.name}</span>
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
 
                 {/* Разделитель */}
-                {/* <div className="border-t my-4"></div> */}
+                <div className="border-t my-4"></div>
 
                 {/* Кнопки действий */}
-{/*                 <div className="space-y-2">
+                <div className="space-y-2">
                   <Link
                     href="/admin/login"
                     onClick={() => setMobileMenuOpen(false)}
@@ -184,7 +209,7 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
                   >
                     Присоединиться
                   </Button>
-                </div> */}
+                </div>
               </div>
             </SheetContent>
           </Sheet>
