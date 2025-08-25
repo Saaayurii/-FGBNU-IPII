@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { adminApi } from "@/lib/core";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -86,14 +87,9 @@ export default function NewsletterPage() {
 
   const fetchNewsletters = async () => {
     try {
-      const response = await fetch("/api/admin/newsletters");
-      if (response.ok) {
-        const data = await response.json();
-        setNewsletters(data);
-        setFilteredNewsletters(data);
-      } else {
-        toast.error("Не удалось загрузить рассылки");
-      }
+      const data = await adminApi.newsletters.getAll();
+      setNewsletters(data);
+      setFilteredNewsletters(data);
     } catch (error) {
       console.error("Error fetching newsletters:", error);
       toast.error("Произошла ошибка при загрузке рассылок");
@@ -104,16 +100,9 @@ export default function NewsletterPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`/api/admin/newsletters/${id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        toast.success("Рассылка удалена");
-        fetchNewsletters();
-      } else {
-        toast.error("Не удалось удалить рассылку");
-      }
+      await adminApi.newsletters.delete(id);
+      toast.success("Рассылка удалена");
+      fetchNewsletters();
     } catch (error) {
       console.error("Error deleting newsletter:", error);
       toast.error("Произошла ошибка при удалении рассылки");

@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Save } from 'lucide-react';
 import { FileUpload } from './FileUpload';
 import { ImagePreview } from './ImagePreview';
+import { adminApi } from '@/lib/core';
 
 interface SliderFormProps {
   initialData?: {
@@ -71,18 +72,15 @@ export function SliderForm({ initialData, onSubmit, isLoading = false }: SliderF
     const form = new FormData();
     form.append('file', file);
 
-    const response = await fetch('/api/upload/slider', {
-      method: 'POST',
-      body: form,
-    });
+    const result = await adminApi.uploads.slider(form);
 
-    if (!response.ok) {
-      throw new Error('Ошибка при загрузке изображения');
+    if (!result.success) {
+      throw new Error(result.error || 'Ошибка при загрузке изображения');
     }
 
-    const data = await response.json();
-    setFormData(prev => ({ ...prev, imageUrl: data.url }));
-    return data.url;
+    const url = result.data?.filePath || '';
+    setFormData(prev => ({ ...prev, imageUrl: url }));
+    return url;
   };
 
   return (

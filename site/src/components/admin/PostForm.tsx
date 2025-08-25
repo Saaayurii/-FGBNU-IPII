@@ -12,6 +12,7 @@ import { Loader2, Save, Eye } from 'lucide-react';
 import { RichTextEditor } from './RichTextEditor';
 import { FileUpload } from './FileUpload';
 import { ImagePreview } from './ImagePreview';
+import { adminApi } from '@/lib/core';
 
 interface PostFormProps {
   initialData?: {
@@ -64,18 +65,15 @@ export function PostForm({ initialData, onSubmit, isLoading = false }: PostFormP
     const formData = new FormData();
     formData.append('file', file);
     
-    const response = await fetch('/api/upload/image', {
-      method: 'POST',
-      body: formData,
-    });
+    const result = await adminApi.uploads.image(formData);
     
-    if (!response.ok) {
-      throw new Error('Ошибка при загрузке изображения');
+    if (!result.success) {
+      throw new Error(result.error || 'Ошибка при загрузке изображения');
     }
     
-    const data = await response.json();
-    setFormData(prev => ({ ...prev, imageUrl: data.url }));
-    return data.url;
+    const url = result.data?.filePath || '';
+    setFormData(prev => ({ ...prev, imageUrl: url }));
+    return url;
   };
 
   const categoryOptions = [

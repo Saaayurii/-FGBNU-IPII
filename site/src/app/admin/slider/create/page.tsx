@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { SliderForm } from '@/components/admin/SliderForm';
-import { createSliderImage } from '@/actions/slider';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { SliderForm } from "@/components/admin/SliderForm";
+import { createSliderImage } from "@/actions/slider";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { toast } from "sonner";
 
 export default function CreateSliderPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const { 0: isLoading, 1: setIsLoading } = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (data: {
@@ -23,24 +23,24 @@ export default function CreateSliderPage() {
     order: number;
   }) => {
     setIsLoading(true);
-    
+
     try {
       const result = await createSliderImage({
         title: data.title,
         imageUrl: data.imageUrl,
         link: data.link,
-        order: data.order
+        order: data.order,
       });
 
       if (result.success) {
-        toast.success('Изображение слайдера успешно создано!');
-        router.push('/admin/slider');
+        toast.success("Изображение слайдера успешно создано!");
+        router.push("/admin/slider");
       } else {
-        toast.error(result.error || 'Не удалось создать изображение слайдера');
+        toast.error(result.error || "Не удалось создать изображение слайдера");
       }
     } catch (error) {
-      console.error('Error creating slider image:', error);
-      toast.error('Произошла ошибка при создании изображения слайдера');
+      console.error("Error creating slider image:", error);
+      toast.error("Произошла ошибка при создании изображения слайдера");
     } finally {
       setIsLoading(false);
     }
@@ -72,10 +72,7 @@ export default function CreateSliderPage() {
           <CardTitle>Информация об изображении</CardTitle>
         </CardHeader>
         <CardContent>
-          <SliderForm
-            onSubmit={handleSubmit}
-            isLoading={isLoading}
-          />
+          <SliderForm onSubmit={handleSubmit} isLoading={isLoading} />
         </CardContent>
       </Card>
     </div>

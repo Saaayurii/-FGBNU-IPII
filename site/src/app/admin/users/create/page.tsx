@@ -1,25 +1,26 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, Loader2, Save } from 'lucide-react';
-import Link from 'next/link';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowLeft, Loader2, Save } from "lucide-react";
+import Link from "next/link";
+import { toast } from "sonner";
+import { adminApi } from "@/lib/core";
 
 export default function CreateAdminPage() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    name: ''
+  const { 0: formData, 1: setFormData } = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    name: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { 0: isLoading, 1: setIsLoading } = useState(false);
+  const { 0: error, 1: setError } = useState<string | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,50 +28,43 @@ export default function CreateAdminPage() {
     setError(null);
 
     if (!formData.email.trim()) {
-      setError('Email обязателен для заполнения');
+      setError("Email обязателен для заполнения");
       return;
     }
 
     if (!formData.password) {
-      setError('Пароль обязателен для заполнения');
+      setError("Пароль обязателен для заполнения");
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('Пароль должен содержать минимум 6 символов');
+      setError("Пароль должен содержать минимум 6 символов");
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Пароли не совпадают');
+      setError("Пароли не совпадают");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/admin/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          name: formData.name,
-        }),
+      const result = await adminApi.users.create({
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
       });
 
-      if (response.ok) {
-        toast.success('Администратор успешно создан!');
-        router.push('/admin');
+      if (result.success) {
+        toast.success("Администратор успешно создан!");
+        router.push("/admin");
       } else {
-        const data = await response.json();
-        setError(data.error || 'Не удалось создать администратора');
+        setError(result.error || "Не удалось создать администратора");
       }
     } catch (error) {
-      console.error('Error creating admin:', error);
-      setError('Произошла ошибка при создании администратора');
+      console.error("Error creating admin:", error);
+      setError("Произошла ошибка при создании администратора");
     } finally {
       setIsLoading(false);
     }
@@ -114,7 +108,7 @@ export default function CreateAdminPage() {
                 type="text"
                 value={formData.name}
                 onChange={(e) =>
-                  setFormData(prev => ({ ...prev, name: e.target.value }))
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
                 }
                 placeholder="Введите имя администратора"
                 disabled={isLoading}
@@ -128,7 +122,7 @@ export default function CreateAdminPage() {
                 type="email"
                 value={formData.email}
                 onChange={(e) =>
-                  setFormData(prev => ({ ...prev, email: e.target.value }))
+                  setFormData((prev) => ({ ...prev, email: e.target.value }))
                 }
                 placeholder="admin@example.com"
                 required
@@ -143,7 +137,7 @@ export default function CreateAdminPage() {
                 type="password"
                 value={formData.password}
                 onChange={(e) =>
-                  setFormData(prev => ({ ...prev, password: e.target.value }))
+                  setFormData((prev) => ({ ...prev, password: e.target.value }))
                 }
                 placeholder="••••••••"
                 required
@@ -162,7 +156,10 @@ export default function CreateAdminPage() {
                 type="password"
                 value={formData.confirmPassword}
                 onChange={(e) =>
-                  setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    confirmPassword: e.target.value,
+                  }))
                 }
                 placeholder="••••••••"
                 required

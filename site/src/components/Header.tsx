@@ -1,13 +1,9 @@
 "use client";
 
-import { useState } from 'react';
-import { useTheme } from 'next-themes';
-import { Button } from '@/components/ui/button';
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+import { useState } from "react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Menu,
   Sun,
@@ -29,14 +25,16 @@ interface HeaderProps {
 
 export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
   const { theme, setTheme } = useTheme();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { 0: mobileMenuOpen, 1: setMobileMenuOpen } = useState(false);
   const pathname = usePathname();
 
   const handleContactsClick = () => {
     onContactsClick
       ? onContactsClick()
-      : pathname !== '/contact'
-        ? document.querySelector('footer')?.scrollIntoView({ behavior: 'smooth' })
+      : pathname !== "/contact"
+        ? document
+            .querySelector("footer")
+            ?.scrollIntoView({ behavior: "smooth" })
         : null;
 
     setMobileMenuOpen(false);
@@ -54,7 +52,7 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
   };
 
   const navigationItems = [
-    { name: 'Главная', href: '/', icon: Home },
+    { name: "Главная", href: "/", icon: Home },
     {
       name: 'Новости',
       href: '/news',
@@ -163,28 +161,6 @@ export function Header({ onNewsClick, onContactsClick }: HeaderProps) {
                     </div>
                   ))}
                 </div>
-
-                {/* Разделитель */}
-                {/* <div className="border-t my-4"></div> */}
-
-                {/* Кнопки действий */}
-{/*                 <div className="space-y-2">
-                  <Link
-                    href="/admin/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Button variant="ghost" className="w-full justify-start">
-                      <User className="h-4 w-4 mr-2" />
-                      Войти
-                    </Button>
-                  </Link>
-                  <Button
-                    className="w-full"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Присоединиться
-                  </Button>
-                </div> */}
               </div>
             </SheetContent>
           </Sheet>

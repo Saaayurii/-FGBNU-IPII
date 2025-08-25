@@ -1,29 +1,38 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { 
-  FileText, 
-  Users, 
-  Image as ImageIcon, 
-  Mail, 
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  FileText,
+  Users,
+  Image as ImageIcon,
+  Mail,
   Eye,
   TrendingUp,
-  Target
-} from 'lucide-react';
-import { getPostsStats } from '@/actions/posts';
-import { getSubscribersStats } from '@/actions/subscribers';
-import { getSliderStats } from '@/actions/slider';
-import { getNewsletterStats } from '@/actions/newsletter';
-import type { PostsStats, SubscribersStats, SliderStats, NewsletterStats } from '@/types';
+  Target,
+} from "lucide-react";
+import { getPostsStats } from "@/actions/posts";
+import { getSubscribersStats } from "@/actions/subscribers";
+import { getSliderStats } from "@/actions/slider";
+import { getNewsletterStats } from "@/actions/newsletter";
+import type {
+  PostsStats,
+  SubscribersStats,
+  SliderStats,
+  NewsletterStats,
+} from "@/types";
 
-export function AdminStats() {
-  const [postsStats, setPostsStats] = useState<PostsStats | null>(null);
-  const [subscribersStats, setSubscribersStats] = useState<SubscribersStats | null>(null);
-  const [sliderStats, setSliderStats] = useState<SliderStats | null>(null);
-  const [newsletterStats, setNewsletterStats] = useState<NewsletterStats | null>(null);
-  const [loading, setLoading] = useState(true);
+export var AdminStats = () => {
+  const { 0: postsStats, 1: setPostsStats } = useState<PostsStats | null>(null);
+  const { 0: subscribersStats, 1: setSubscribersStats } =
+    useState<SubscribersStats | null>(null);
+  const { 0: sliderStats, 1: setSliderStats } = useState<SliderStats | null>(
+    null
+  );
+  const { 0: newsletterStats, 1: setNewsletterStats } =
+    useState<NewsletterStats | null>(null);
+  const { 0: loading, 1: setLoading } = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -32,7 +41,7 @@ export function AdminStats() {
           getPostsStats(),
           getSubscribersStats(),
           getSliderStats(),
-          getNewsletterStats()
+          getNewsletterStats(),
         ]);
 
         setPostsStats(posts);
@@ -40,7 +49,7 @@ export function AdminStats() {
         setSliderStats(slider);
         setNewsletterStats(newsletter);
       } catch (error) {
-        console.error('Ошибка при загрузке статистики:', error);
+        console.error("Ошибка при загрузке статистики:", error);
       } finally {
         setLoading(false);
       }
@@ -69,61 +78,61 @@ export function AdminStats() {
 
   const statsCards = [
     {
-      title: 'Всего публикаций',
+      title: "Всего публикаций",
       value: postsStats?.totalPosts || 0,
       change: `${postsStats?.publishedPosts || 0} опубликовано`,
       icon: FileText,
-      color: 'text-blue-600 dark:text-blue-400'
+      color: "text-blue-600 dark:text-blue-400",
     },
     {
-      title: 'Просмотры публикаций',
+      title: "Просмотры публикаций",
       value: postsStats?.totalViews || 0,
       change: `${postsStats?.featuredPosts || 0} в избранном`,
       icon: Eye,
-      color: 'text-green-600 dark:text-green-400'
+      color: "text-green-600 dark:text-green-400",
     },
     {
-      title: 'Всего подписчиков',
+      title: "Всего подписчиков",
       value: subscribersStats?.total || 0,
       change: `${subscribersStats?.active || 0} активных (${Math.round(subscribersStats?.activeRate || 0)}%)`,
       icon: Users,
-      color: 'text-purple-600 dark:text-purple-400'
+      color: "text-purple-600 dark:text-purple-400",
     },
     {
-      title: 'Новые подписчики в этом месяце',
+      title: "Новые подписчики в этом месяце",
       value: subscribersStats?.newThisMonth || 0,
-      change: 'Рост за месяц',
+      change: "Рост за месяц",
       icon: TrendingUp,
-      color: 'text-emerald-600 dark:text-emerald-400'
+      color: "text-emerald-600 dark:text-emerald-400",
     },
     {
-      title: 'Изображения в слайдере',
+      title: "Изображения в слайдере",
       value: sliderStats?.totalImages || 0,
       change: `${sliderStats?.activeImages || 0} активных`,
       icon: ImageIcon,
-      color: 'text-orange-600 dark:text-orange-400'
+      color: "text-orange-600 dark:text-orange-400",
     },
     {
-      title: 'Рассылка',
+      title: "Рассылка",
       value: newsletterStats?.totalEmails || 0,
       change: `Успешно: ${Math.round(newsletterStats?.successRate || 0)}%`,
       icon: Mail,
-      color: 'text-cyan-600 dark:text-cyan-400'
+      color: "text-cyan-600 dark:text-cyan-400",
     },
     {
-      title: 'Новости',
+      title: "Новости",
       value: postsStats?.byCategory?.news || 0,
-      change: 'Публикаций в категории новости',
+      change: "Публикаций в категории новости",
       icon: FileText,
-      color: 'text-blue-600 dark:text-blue-400'
+      color: "text-blue-600 dark:text-blue-400",
     },
     {
-      title: 'Вакансии',
+      title: "Вакансии",
       value: postsStats?.byCategory?.vacancy || 0,
-      change: 'Публикаций в категории вакансии',
+      change: "Публикаций в категории вакансии",
       icon: Target,
-      color: 'text-red-600 dark:text-red-400'
-    }
+      color: "text-red-600 dark:text-red-400",
+    },
   ];
 
   return (
@@ -162,12 +171,14 @@ export function AdminStats() {
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Новости</span>
               <div className="flex items-center gap-2">
-                <Badge variant="secondary">{postsStats?.byCategory?.news || 0}</Badge>
+                <Badge variant="secondary">
+                  {postsStats?.byCategory?.news || 0}
+                </Badge>
                 <div className="w-20 bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-blue-600 h-2 rounded-full" 
-                    style={{ 
-                      width: `${((postsStats?.byCategory?.news || 0) / (postsStats?.totalPosts || 1)) * 100}%` 
+                  <div
+                    className="bg-blue-600 h-2 rounded-full"
+                    style={{
+                      width: `${((postsStats?.byCategory?.news || 0) / (postsStats?.totalPosts || 1)) * 100}%`,
                     }}
                   ></div>
                 </div>
@@ -176,12 +187,14 @@ export function AdminStats() {
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Вакансии</span>
               <div className="flex items-center gap-2">
-                <Badge variant="secondary">{postsStats?.byCategory?.vacancy || 0}</Badge>
+                <Badge variant="secondary">
+                  {postsStats?.byCategory?.vacancy || 0}
+                </Badge>
                 <div className="w-20 bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-red-600 h-2 rounded-full" 
-                    style={{ 
-                      width: `${((postsStats?.byCategory?.vacancy || 0) / (postsStats?.totalPosts || 1)) * 100}%` 
+                  <div
+                    className="bg-red-600 h-2 rounded-full"
+                    style={{
+                      width: `${((postsStats?.byCategory?.vacancy || 0) / (postsStats?.totalPosts || 1)) * 100}%`,
                     }}
                   ></div>
                 </div>
@@ -190,12 +203,14 @@ export function AdminStats() {
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Объявления</span>
               <div className="flex items-center gap-2">
-                <Badge variant="secondary">{postsStats?.byCategory?.announcement || 0}</Badge>
+                <Badge variant="secondary">
+                  {postsStats?.byCategory?.announcement || 0}
+                </Badge>
                 <div className="w-20 bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-yellow-600 h-2 rounded-full" 
-                    style={{ 
-                      width: `${((postsStats?.byCategory?.announcement || 0) / (postsStats?.totalPosts || 1)) * 100}%` 
+                  <div
+                    className="bg-yellow-600 h-2 rounded-full"
+                    style={{
+                      width: `${((postsStats?.byCategory?.announcement || 0) / (postsStats?.totalPosts || 1)) * 100}%`,
                     }}
                   ></div>
                 </div>
@@ -204,12 +219,14 @@ export function AdminStats() {
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">События</span>
               <div className="flex items-center gap-2">
-                <Badge variant="secondary">{postsStats?.byCategory?.event || 0}</Badge>
+                <Badge variant="secondary">
+                  {postsStats?.byCategory?.event || 0}
+                </Badge>
                 <div className="w-20 bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-green-600 h-2 rounded-full" 
-                    style={{ 
-                      width: `${((postsStats?.byCategory?.event || 0) / (postsStats?.totalPosts || 1)) * 100}%` 
+                  <div
+                    className="bg-green-600 h-2 rounded-full"
+                    style={{
+                      width: `${((postsStats?.byCategory?.event || 0) / (postsStats?.totalPosts || 1)) * 100}%`,
                     }}
                   ></div>
                 </div>
@@ -239,15 +256,17 @@ export function AdminStats() {
               </Badge>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Процент успешной доставки</span>
+              <span className="text-sm font-medium">
+                Процент успешной доставки
+              </span>
               <Badge className="bg-blue-100 text-blue-800">
                 {Math.round(newsletterStats?.successRate || 0)}%
               </Badge>
             </div>
             <div className="pt-2">
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
-                  className="bg-green-600 h-2 rounded-full transition-all duration-300" 
+                <div
+                  className="bg-green-600 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${newsletterStats?.successRate || 0}%` }}
                 ></div>
               </div>
@@ -257,4 +276,4 @@ export function AdminStats() {
       </div>
     </div>
   );
-}
+};

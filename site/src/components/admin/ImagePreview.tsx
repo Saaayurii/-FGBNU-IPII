@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { X, Eye, Download } from 'lucide-react';
+import { apiCore } from '@/lib/core';
 
 interface ImagePreviewProps {
   src: string;
@@ -32,8 +33,7 @@ export function ImagePreview({
 
   const handleDownload = async () => {
     try {
-      const response = await fetch(src);
-      const blob = await response.blob();
+      const blob = await apiCore.download(src);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
