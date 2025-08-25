@@ -24,7 +24,7 @@ export default function NewsCard({ item }: { item: NewsItem }) {
       )}
       
       <div className="px-4 pt-4 pb-8">
-        <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors">
+        <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors dark:text-black">
           {item.title}
         </h3>
         

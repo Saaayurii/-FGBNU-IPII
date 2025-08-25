@@ -44,8 +44,8 @@ export default async function ContactPage() {
                                             <MapPin className="h-5 w-5 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h4 className="font-semibold">Адрес</h4>
-                                            <p>
+                                            <h4 className="font-semibold dark:text-black">Адрес</h4>
+                                            <p className="dark:text-black">
                                                 83050, г. Донецк,
                                                 <br />
                                                 ул. Артема, 118Б
@@ -58,8 +58,8 @@ export default async function ContactPage() {
                                             <Phone className="h-5 w-5 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h4 className="font-semibold">Телефон</h4>
-                                            <p>+7 (XXX) XXX-XX-XX</p>
+                                            <h4 className="font-semibold dark:text-black">Телефон</h4>
+                                            <p className="dark:text-black">+7 (XXX) XXX-XX-XX</p>
                                         </div>
                                     </div>
 
@@ -68,8 +68,8 @@ export default async function ContactPage() {
                                             <Mail className="h-5 w-5 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h4 className="font-semibold">Email</h4>
-                                            <p>info@ipii-ai.ru</p>
+                                            <h4 className="font-semibold dark:text-black">Email</h4>
+                                            <p className="dark:text-black">info@ipii-ai.ru</p>
                                         </div>
                                     </div>
 
@@ -78,10 +78,10 @@ export default async function ContactPage() {
                                             <Clock className="h-5 w-5 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h4 className="font-semibold">
+                                            <h4 className="font-semibold dark:text-black">
                                                 Режим работы
                                             </h4>
-                                            <div>
+                                            <div className="dark:text-black">
                                                 <p>Понедельник - Пятница: 9:00 - 18:00</p>
                                                 <p>Суббота - Воскресенье: Выходные</p>
                                             </div>
@@ -92,10 +92,10 @@ export default async function ContactPage() {
 
                             {/* Дополнительная информация */}
                             <div className="bg-gradient-to-br from-blue-100 to-blue-50 rounded-lg p-6 border border-blue-200">
-                                <h4 className="font-semibold mb-3">
+                                <h4 className="font-semibold mb-3 dark:text-black">
                                     Как добраться
                                 </h4>
-                                <div className="space-y-2 text-sm">
+                                <div className="space-y-2 text-sm dark:text-black">
                                     <p>
                                         • <strong>На общественном транспорте:</strong> автобусы № 5,
                                         12, 23 до остановки "Артема"

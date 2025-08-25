@@ -73,7 +73,7 @@ export function News({ onViewAllNews, posts = [], onReadNews }: NewsProps) {
   };
 
   return (
-    <section className="py-16 bg-[#f8fafc]">
+    <section className="py-16 bg-[#f8fafc] dark:bg-background/95">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-10">
           <h2 className="text-3xl md:text-4xl font-bold">
@@ -107,7 +107,7 @@ export function News({ onViewAllNews, posts = [], onReadNews }: NewsProps) {
               )}
 
               <div className="px-4 pb-4">
-                <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors">
+                <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors dark:text-black">
                   {post.title}
                 </h3>
 

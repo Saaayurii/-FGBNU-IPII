@@ -160,7 +160,7 @@ export function Filters() {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg border mb-10">
+    <div className="bg-white p-4 rounded-lg border mb-10 dark:bg-background/95">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Поле "Дата от" */}
         <div>
