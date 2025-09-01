@@ -1,5 +1,3 @@
-'use client'
-
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/ui/Footer";
 import { BackButton } from '@/components/news/BackButton';

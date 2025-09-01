@@ -42,7 +42,7 @@ export function Hero({ sliderImages = [] }: HeroProps) {
     {
       id: "3",
       imageUrl:
-        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=1200&q=80",
+        "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=1200&q=80",
       title: "Компьютерное зрение и обработка изображений",
       order: 2,
       active: true,

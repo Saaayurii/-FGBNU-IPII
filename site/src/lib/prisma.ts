@@ -5,12 +5,25 @@ declare global {
 }
 
 export const prisma = globalThis.__prisma || new PrismaClient({
-  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+  transactionOptions: {
+    timeout: 30000, // 30 seconds
+  },
 })
 
 if (process.env.NODE_ENV !== 'production') {
   globalThis.__prisma = prisma
 }
+
+// Gracefully disconnect on process termination
+process.on('beforeExit', async () => {
+  await prisma.$disconnect()
+})
 
 // Хелперы для часто используемых запросов
 export const postHelpers = {
