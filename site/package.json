@@ -11,7 +11,8 @@
     "db:studio": "prisma studio",
     "db:generate": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
-    "db:reset": "prisma db push --force-reset && npm run db:seed"
+    "db:reset": "prisma db push --force-reset && npm run db:seed",
+    "migrate:images": "node scripts/migrate-image-paths.js"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

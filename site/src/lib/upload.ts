@@ -69,13 +69,18 @@ export async function saveFile(
   
   await writeFile(filePath, optimizedBuffer);
   
-  return `/uploads/${type}/${fileName}`;
+  // В продакшене изображения будут обслуживаться через API route
+  return `/api/images/${type}/${fileName}`;
 }
 
 export async function deleteFile(filePath: string): Promise<boolean> {
   try {
     const fs = require('fs').promises;
-    const fullPath = join(process.cwd(), 'public', filePath);
+    // Если путь начинается с /api/images, преобразуем его в физический путь
+    const actualPath = filePath.startsWith('/api/images/') 
+      ? filePath.replace('/api/images/', '/uploads/')
+      : filePath;
+    const fullPath = join(process.cwd(), 'public', actualPath);
     await fs.unlink(fullPath);
     return true;
   } catch (error) {

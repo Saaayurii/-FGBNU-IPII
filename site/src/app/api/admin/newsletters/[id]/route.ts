@@ -5,17 +5,18 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const resolvedParams = await params;
 
     if (!session || !session.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const newsletter = await prisma.newsletter.findUnique({
-      where: { id: params.id }
+      where: { id: resolvedParams.id }
     });
 
     if (!newsletter) {
@@ -34,10 +35,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const resolvedParams = await params;
 
     if (!session || !session.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -59,7 +61,7 @@ export async function PUT(
     });
 
     const newsletter = await prisma.newsletter.update({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
       data: {
         subject,
         content,
@@ -82,17 +84,18 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const resolvedParams = await params;
 
     if (!session || !session.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     await prisma.newsletter.delete({
-      where: { id: params.id }
+      where: { id: resolvedParams.id }
     });
 
     return NextResponse.json({ message: 'Рассылка удалена' });

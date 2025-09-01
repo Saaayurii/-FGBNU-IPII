@@ -5,17 +5,18 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const resolvedParams = await params;
 
     if (!session || !session.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const vacancy = await prisma.vacancy.findUnique({
-      where: { id: params.id }
+      where: { id: resolvedParams.id }
     });
 
     if (!vacancy) {
@@ -34,10 +35,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const resolvedParams = await params;
 
     if (!session || !session.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -54,7 +56,7 @@ export async function PUT(
     }
 
     const vacancy = await prisma.vacancy.update({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
       data: {
         title,
         description,
@@ -79,10 +81,11 @@ export async function PUT(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const resolvedParams = await params;
 
     if (!session || !session.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -92,7 +95,7 @@ export async function PATCH(
     const { isActive } = body;
 
     const vacancy = await prisma.vacancy.update({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
       data: {
         isActive,
         updatedAt: new Date()
@@ -111,17 +114,18 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const resolvedParams = await params;
 
     if (!session || !session.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     await prisma.vacancy.delete({
-      where: { id: params.id }
+      where: { id: resolvedParams.id }
     });
 
     return NextResponse.json({ message: 'Вакансия удалена' });
