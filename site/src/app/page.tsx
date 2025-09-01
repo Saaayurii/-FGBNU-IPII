@@ -3,27 +3,27 @@ import { MainPage } from "@/components/MainPage";
 import { getPosts } from "@/actions/posts";
 import { getSliderImages } from "@/actions/slider";
 
-async function HomePage() {
+var HomePage = () => {
   // Параллельно загружаем данные
-  const [posts, sliderImages] = await Promise.all([
+  return Promise.all([
     getPosts(),
     getSliderImages()
-  ]);
+  ]).then(([posts, sliderImages]) => {
+    // Разделяем посты по категориям
+    var newsPosts = posts.filter(post => post.category === 'NEWS');
+    var vacancyPosts = posts.filter(post => post.category === 'VACANCY');
 
-  // Разделяем посты по категориям
-  const newsPosts = posts.filter(post => post.category === 'NEWS');
-  const vacancyPosts = posts.filter(post => post.category === 'VACANCY');
-
-  return (
-    <MainPage 
-      newsPosts={newsPosts}
-      vacancyPosts={vacancyPosts}
-      sliderImages={sliderImages}
-    />
-  );
+    return (
+      <MainPage 
+        newsPosts={newsPosts}
+        vacancyPosts={vacancyPosts}
+        sliderImages={sliderImages}
+      />
+    );
+  });
 }
 
-export default function Home() {
+var Home = () => {
   return (
     <Suspense 
       fallback={
@@ -36,3 +36,5 @@ export default function Home() {
     </Suspense>
   );
 }
+
+export default Home;
