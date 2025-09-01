@@ -203,7 +203,7 @@ export default async function VacanciesPage({
                         <Link
                           href={`/vacancies/${vacancy.slug}`}
                           // variant="outline"
-                          // className="w-full mt-4 cursor-pointer"
+                          className="w-full mt-4 cursor-pointer"
                           // onClick={() => onViewVacancy?.(vacancy)}
                         >
                           Подробнее
