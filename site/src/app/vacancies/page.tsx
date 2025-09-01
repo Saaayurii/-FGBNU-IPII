@@ -190,11 +190,11 @@ export default async function VacanciesPage({
                       </div>
 
                       {/* Кнопка "Подробнее" */}
-                      <div className="pt-4 border-t mt-auto">
+                      <div className="pt-4 border-t mt-4 text-center">
                         <Link
                           href={`/vacancies/${vacancy.slug}`}
                           // variant="outline"
-                          className="w-full mt-4 cursor-pointer"
+                          className="cursor-pointe bg-blue-500 text-white border-blue-500 flex pt-2 pb-2 justify-center items-center rounded-[5px]"
                           // onClick={() => onViewVacancy?.(vacancy)}
                         >
                           Подробнее
