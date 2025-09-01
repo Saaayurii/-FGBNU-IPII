@@ -1,10 +1,8 @@
-'use client'
-
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/ui/Footer";
 import { BackButton } from '@/components/news/BackButton';
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
-import { LeafletMap } from "./../../components/LeafletMap";
+import { MapWrapper } from "@/components/MapWrapper";
 
 export default async function ContactPage() {
     return (
@@ -25,7 +23,7 @@ export default async function ContactPage() {
                                 className="bg-white rounded-lg overflow-hidden shadow-lg border-2 border-blue-100"
                                 style={{ height: "400px" }}
                             >
-                                <LeafletMap className="rounded-lg" />
+                                <MapWrapper className="rounded-lg" />
                             </div>
                             <p className="text-sm text-blue-600">
                                 * Интерактивная карта с точным расположением института

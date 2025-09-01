@@ -1,10 +1,7 @@
-"use client";
-
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/ui/Footer";
 import { Pagination } from "@/components/news/Pagination";
 import { BackButton } from "@/components/news/BackButton";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink } from "lucide-react";
@@ -14,7 +11,6 @@ import Link from "next/link";
 
 interface ProgramsProps {
   vacancies?: PostWithAuthor[];
-  onViewVacancy?: (vacancy: PostWithAuthor) => void;
   searchParams?: {
     // Добавляем searchParams в props
     page?: string;
@@ -22,16 +18,11 @@ interface ProgramsProps {
     to?: string;
     category?: string;
   };
-  item: string;
-  slug: string;
 }
 
 export default async function VacanciesPage({
   vacancies = [],
-  onViewVacancy,
   searchParams,
-  item,
-  slug,
 }: ProgramsProps) {
   // Фильтруем только опубликованные вакансии
   const publishedVacancies = vacancies
@@ -48,7 +39,7 @@ export default async function VacanciesPage({
     to: searchParams?.to,
     category: searchParams?.category,
   };
-  const { news, totalPages } = await fetchNews(currentPage, 5, filters);
+  const { totalPages } = await fetchNews(currentPage, 5, filters);
 
   // Fallback данные если нет вакансий
   const fallbackVacancies = [
@@ -58,12 +49,12 @@ export default async function VacanciesPage({
       description:
         "Проведение научных исследований в области компьютерного зрения и нейросетевых технологий, анализ современных тенденций, методов и алгоритмов, оптимизация существующих алгоритмов для повышения их эффективности и точности.",
       content: `<h3>Основные обязанности:</h3>
-<ul>
-<li>Разработка, обучение и тестирование нейросетевых моделей для решения задач компьютерного зрения</li>
-<li>Сбор, аннотирование и предобработка данных для обучения моделей</li>
-<li>Разработка методов аугментации данных для улучшения качества обучения</li>
-<li>Проведение экспериментов для оценки производительности разработанных моделей</li>
-<li>Подготовка научных публикаций, отчетов и презентаций о результатах исследований</li>
+				<ul>
+						<li>Разработка, обучение и тестирование нейросетевых моделей для решения задач компьютерного зрения</li>
+							<li>Сбор, аннотирование и предобработка данных для обучения моделей</li>
+							<li>Разработка методов аугментации данных для улучшения качества обучения</li>
+									<li>Проведение экспериментов для оценки производительности разработанных моделей</li>
+									<li>Подготовка научных публикаций, отчетов и презентаций о результатах исследований</li>
 </ul>
 <h3>Требования:</h3>
 <ul>
