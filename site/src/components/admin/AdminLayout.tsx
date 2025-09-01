@@ -28,7 +28,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     );
   }
 
-  if (!session || session.user.role !== "ADMIN") {
+  if (!session || !session.user || (session.user as any).role !== "ADMIN") {
     redirect("/admin/login");
   }
 

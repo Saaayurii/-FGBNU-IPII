@@ -95,22 +95,27 @@ async function main() {
   // Создание тестовых изображений слайдера
   const sliderImages = [
     {
-      title: 'Добро пожаловать на наш сайт',
-      imageUrl: '/uploads/slider/welcome.jpg',
+      title: 'Исследования в области искусственного интеллекта',
+      imageUrl: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&h=600&fit=crop&q=80',
       order: 1,
       active: true,
     },
     {
-      title: 'Наши достижения',
-      imageUrl: '/uploads/slider/achievements.jpg',
+      title: 'Лаборатория компьютерного зрения',
+      imageUrl: 'https://images.unsplash.com/photo-1555255707-c07966088b7b?w=1200&h=600&fit=crop&q=80',
       order: 2,
       active: true,
     },
   ]
 
   for (const image of sliderImages) {
-    await prisma.sliderImage.create({
-      data: image,
+    await prisma.sliderImage.upsert({
+      where: { id: `test-${image.order}` },
+      update: {},
+      create: {
+        id: `test-${image.order}`,
+        ...image,
+      },
     })
   }
 

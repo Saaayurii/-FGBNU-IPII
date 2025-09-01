@@ -1,10 +1,10 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/ui/Footer";
-import { BackButton } from '@/components/news/BackButton';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Building2, Users, Target, Award, BookOpen, Globe } from "lucide-react";
 import Image from "next/image";
+import { BackButton } from "@/components/news/BackButton";
 
 export default async function AboutPage() {
     return (
@@ -12,7 +12,7 @@ export default async function AboutPage() {
             <Header />
             
             {/* Hero секция */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20">
+            <div className="bg-gradient-to-r from-gray-800 to-slate-700 text-white py-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <BackButton className="mb-6" />
                     <div className="max-w-4xl">
@@ -23,7 +23,7 @@ export default async function AboutPage() {
                         <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                             Лаборатория интеллектуальных систем анализа данных
                         </h1>
-                        <p className="text-xl text-blue-100 leading-relaxed">
+                        <p className="text-xl text-gray-100 leading-relaxed">
                             Современные исследования в области компьютерного зрения, машинного обучения и интеллектуальных систем для беспилотных технологий
                         </p>
                     </div>
@@ -37,8 +37,8 @@ export default async function AboutPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
                     <Card className="text-center p-6 hover:shadow-lg transition-shadow">
                         <CardContent className="pt-6">
-                            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                                <Target className="w-6 h-6 text-blue-600" />
+                            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                                <Target className="w-6 h-6 text-gray-600" />
                             </div>
                             <h3 className="font-semibold text-lg mb-2">Наша миссия</h3>
                             <p className="text-muted-foreground text-sm">
@@ -49,8 +49,8 @@ export default async function AboutPage() {
                     
                     <Card className="text-center p-6 hover:shadow-lg transition-shadow">
                         <CardContent className="pt-6">
-                            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                                <Users className="w-6 h-6 text-green-600" />
+                            <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                                <Users className="w-6 h-6 text-slate-600" />
                             </div>
                             <h3 className="font-semibold text-lg mb-2">Команда</h3>
                             <p className="text-muted-foreground text-sm">
@@ -61,8 +61,8 @@ export default async function AboutPage() {
                     
                     <Card className="text-center p-6 hover:shadow-lg transition-shadow">
                         <CardContent className="pt-6">
-                            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                                <Award className="w-6 h-6 text-purple-600" />
+                            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                                <Award className="w-6 h-6 text-blue-600" />
                             </div>
                             <h3 className="font-semibold text-lg mb-2">Достижения</h3>
                             <p className="text-muted-foreground text-sm">
@@ -79,8 +79,8 @@ export default async function AboutPage() {
                     <div className="lg:col-span-2 space-y-8">
                         <div className="bg-white rounded-xl shadow-sm border p-8">
                             <div className="flex items-center mb-6">
-                                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                                    <BookOpen className="w-4 h-4 text-blue-600" />
+                                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
+                                    <BookOpen className="w-4 h-4 text-gray-600" />
                                 </div>
                                 <h2 className="text-2xl font-semibold">Правовая основа исследований</h2>
                             </div>

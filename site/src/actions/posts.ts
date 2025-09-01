@@ -8,25 +8,43 @@ import { createHash } from 'crypto';
 
 export async function getPosts(category?: Category): Promise<PostWithAuthor[]> {
   try {
-    const posts = await prisma.post.findMany({
-      where: {
-        published: true,
-        ...(category && { category })
-      },
-      include: {
-        author: {
-          select: {
-            name: true,
-            email: true
+    // Добавляем повторные попытки подключения
+    let retries = 3;
+    while (retries > 0) {
+      try {
+        const posts = await prisma.post.findMany({
+          where: {
+            published: true,
+            ...(category && { category })
+          },
+          include: {
+            author: {
+              select: {
+                name: true,
+                email: true
+              }
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
           }
+        });
+        
+        return posts.map(post => ({
+          ...post,
+          imageUrl: post.imageUrl || undefined
+        }));
+      } catch (dbError: any) {
+        retries--;
+        if (retries === 0 || !dbError.message?.includes("Can't reach database")) {
+          throw dbError;
         }
-      },
-      orderBy: {
-        createdAt: 'desc'
+        console.warn(`Database connection failed, retrying... (${retries} attempts left)`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
       }
-    });
+    }
     
-    return posts;
+    return [];
   } catch (error) {
     console.error("Error fetching posts:", error);
     return [];
@@ -50,7 +68,10 @@ export async function getPostBySlug(slug: string): Promise<PostWithAuthor | null
       }
     });
     
-    return post;
+    return post ? {
+      ...post,
+      imageUrl: post.imageUrl || undefined
+    } : null;
   } catch (error) {
     console.error("Error fetching post by slug:", error);
     return null;
@@ -78,7 +99,10 @@ export async function getFeaturedPosts(): Promise<PostWithAuthor[]> {
       take: 6
     });
     
-    return posts;
+    return posts.map(post => ({
+      ...post,
+      imageUrl: post.imageUrl || undefined
+    }));
   } catch (error) {
     console.error("Error fetching featured posts:", error);
     return [];
@@ -279,7 +303,14 @@ export async function getAllPostsForAdmin(page: number = 1, limit: number = 10) 
     ]);
     
     return {
-      posts,
+      posts: posts.map(post => ({
+        ...post,
+        imageUrl: post.imageUrl || undefined,
+        author: post.author ? { 
+          ...post.author, 
+          id: (post.author as any)?.id || '' 
+        } : null
+      })),
       pagination: {
         page,
         limit,
@@ -315,7 +346,14 @@ export async function getPostById(id: string) {
       }
     });
     
-    return post;
+    return post ? {
+      ...post,
+      imageUrl: post.imageUrl || undefined,
+      author: post.author ? {
+        ...post.author,
+        id: (post.author as any)?.id || ''
+      } : null
+    } : null;
   } catch (error) {
     console.error("Error fetching post by id:", error);
     return null;

@@ -29,8 +29,8 @@ interface Post {
   category: "NEWS" | "VACANCY" | "ANNOUNCEMENT" | "EVENT";
   imageUrl?: string;
   published: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
 
 interface PostCardProps {

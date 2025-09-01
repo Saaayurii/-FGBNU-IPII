@@ -135,7 +135,7 @@ export default function CreateNewsletterPage() {
                 <div className="space-y-2">
                   <Label>Содержание письма *</Label>
                   <RichTextEditor
-                    content={formData.content}
+                    value={formData.content}
                     onChange={handleContentChange}
                     placeholder="Введите содержание рассылки..."
                   />

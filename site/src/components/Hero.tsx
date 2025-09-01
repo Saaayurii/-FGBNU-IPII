@@ -21,56 +21,9 @@ interface HeroProps {
 export function Hero({ sliderImages = [] }: HeroProps) {
   const { 0: currentSlide, 1: setCurrentSlide } = useState(0);
 
-  // Fallback slider images if none provided from database
-  const fallbackImages = [
-    {
-      id: "1",
-      imageUrl:
-        "https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=1200&q=80",
-      title: "Беспилотный летательный аппарат в полете",
-      order: 0,
-      active: true,
-    },
-    {
-      id: "2",
-      imageUrl:
-        "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&q=80",
-      title: "Лаборатория искусственного интеллекта",
-      order: 1,
-      active: true,
-    },
-    {
-      id: "3",
-      imageUrl:
-        "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=1200&q=80",
-      title: "Компьютерное зрение и обработка изображений",
-      order: 2,
-      active: true,
-    },
-    {
-      id: "4",
-      imageUrl:
-        "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&q=80",
-      title: "Нейронные сети и глубокое обучение",
-      order: 3,
-      active: true,
-    },
-    {
-      id: "5",
-      imageUrl:
-        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
-      title: "Геолокация и картография",
-      order: 4,
-      active: true,
-    },
-  ];
-
-  const activeImages =
-    sliderImages.length > 0
-      ? sliderImages
-        .filter((img) => img.active)
-        .sort((a, b) => a.order - b.order)
-      : fallbackImages;
+  const activeImages = sliderImages
+    .filter((img) => img.active)
+    .sort((a, b) => a.order - b.order);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % activeImages.length);
@@ -157,10 +110,17 @@ export function Hero({ sliderImages = [] }: HeroProps) {
 
             {/* Custom Slider */}
             {activeImages.length > 0 && (
-              <div className="rounded-lg pb-4 md:pb-6 pt-0">
-                <h3 className="text-xl md:text-2xl font-semibold text-center mb-6 md:mb-10 mt-6 md:mt-10">
-                  Наши исследования в фотографиях
-                </h3>
+              <div className="rounded-lg pb-4 md:pb-6 pt-0 bg-gradient-to-br from-gray-50 to-slate-50 border border-gray-200 p-6 shadow-sm">
+                <div className="text-center mb-6 md:mb-10 mt-2">
+                  <div className="inline-flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-gray-700 to-slate-600 text-white rounded-full text-sm font-medium shadow-md">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                    Галерея исследований
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-semibold mt-4 text-gray-800">
+                    Наши исследования в фотографиях
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-2">Визуальное представление научной деятельности лаборатории</p>
+                </div>
                 <div className="relative">
                   <div className="relative h-64 sm:h-80 md:h-96 lg:h-115 rounded-lg overflow-hidden">
                     <div
@@ -175,11 +135,14 @@ export function Hero({ sliderImages = [] }: HeroProps) {
                           className="w-full h-full flex-shrink-0 relative"
                         >
                           <Image
-                            src={image.imageUrl}
+                            src={image.imageUrl || "/api/placeholder/1200/600"}
                             alt={image.title || `Слайд ${index + 1}`}
                             fill
                             className="object-cover"
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 60vw"
+                            onError={(e) => {
+                              e.currentTarget.src = "/api/placeholder/1200/600";
+                            }}
                           />
                           {image.title && (
                             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 md:p-6">
@@ -216,9 +179,9 @@ export function Hero({ sliderImages = [] }: HeroProps) {
                             <button
                               key={index}
                               onClick={() => goToSlide(index)}
-                              className={`w-2.5 h-2.5 md:w-2 md:h-2 rounded-full transition-all ${index === currentSlide
-                                  ? "bg-white"
-                                  : "bg-white/50"
+                              className={`w-3 h-3 md:w-3 md:h-3 rounded-full transition-all border-2 ${index === currentSlide
+                                  ? "bg-white border-gray-300 shadow-md"
+                                  : "bg-white/50 border-white/30 hover:bg-white/70"
                                 }`}
                               aria-label={`Перейти к слайду ${index + 1}`}
                             />

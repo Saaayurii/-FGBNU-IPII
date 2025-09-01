@@ -8,7 +8,7 @@ export default function NewsCard({ item }: { item: NewsItem }) {
       href={`/news/${item.slug}`}
       className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col"
     >
-      {item.image && (
+      {item.image ? (
         <div className="relative aspect-video overflow-hidden bg-gray-100">
           <img
             src={item.image}
@@ -17,6 +17,16 @@ export default function NewsCard({ item }: { item: NewsItem }) {
             width={500}
             height={281}
           />
+          <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+            {item.category}
+          </div>
+        </div>
+      ) : (
+        <div className="relative aspect-video overflow-hidden bg-gray-100 flex items-center justify-center">
+          <div className="text-center text-gray-500">
+            <div className="text-4xl mb-2">📰</div>
+            <div className="text-sm font-medium">Нет изображения</div>
+          </div>
           <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
             {item.category}
           </div>

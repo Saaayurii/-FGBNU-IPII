@@ -1,11 +1,25 @@
 import { Post, User, SliderImage, Subscriber, Category, Role } from '@prisma/client'
 
+// Базовый тип Post с исправленным imageUrl
+export type BasePost = Omit<Post, 'imageUrl'> & {
+  imageUrl?: string | undefined
+}
+
 // Расширенные типы с relations
-export type PostWithAuthor = Post & {
+export type PostWithAuthor = BasePost & {
   author: Pick<User, 'name' | 'email'> | null
 }
 
-export type AdminPost = Post & {
+// Исправленный тип для админки с excerpt
+export type AdminPostType = BasePost & {
+  author: Pick<User, 'id' | 'name' | 'email'> | null
+  excerpt?: string
+  _count?: {
+    views: number
+  }
+}
+
+export type AdminPost = BasePost & {
   author: Pick<User, 'id' | 'name' | 'email'> | null
   _count?: {
     views: number
@@ -61,6 +75,11 @@ export type PaginationInfo = {
 
 export type PaginatedResponse<T> = {
   items: T[]
+  pagination: PaginationInfo
+}
+
+export type PostsData = {
+  posts: AdminPost[]
   pagination: PaginationInfo
 }
 
@@ -132,4 +151,4 @@ export type AdminStats = {
 }
 
 // Экспорт основных типов из Prisma
-export { Post, User, SliderImage, Subscriber, Category, Role }
+export type { Post, User, SliderImage, Subscriber, Category, Role }

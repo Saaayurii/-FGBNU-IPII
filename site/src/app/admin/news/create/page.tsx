@@ -14,9 +14,9 @@ export default function CreatePostPage() {
 
   const handleSubmit = async (data: Record<string, unknown>) => {
     console.log("Session data:", session);
-    console.log("User ID:", session?.user?.id);
+    console.log("User ID:", (session?.user as any)?.id);
     
-    if (!session?.user?.id) {
+    if (!(session?.user as any)?.id) {
       toast.error("Необходимо войти в систему");
       return;
     }
@@ -24,14 +24,14 @@ export default function CreatePostPage() {
     setIsLoading(true);
     try {
       const result = await createPost({
-        title: data.title,
-        description: data.excerpt,
-        content: data.content,
-        category: data.category,
-        imageUrl: data.imageUrl,
-        published: data.published,
+        title: data.title as string,
+        description: data.excerpt as string,
+        content: data.content as string,
+        category: data.category as any,
+        imageUrl: data.imageUrl as string | undefined,
+        published: data.published as boolean | undefined,
         featured: false,
-        authorId: session.user.id,
+        authorId: (session?.user as any)?.id,
       });
 
       if (result.success) {

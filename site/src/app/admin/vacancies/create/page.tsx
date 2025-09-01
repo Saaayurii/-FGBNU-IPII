@@ -89,7 +89,7 @@ export default function CreateVacancyPage() {
         category: Category.VACANCY,
         published: formData.isActive,
         featured: false,
-        authorId: session.user.id || ""
+        authorId: (session.user as any)?.id || ""
       });
 
       if (result.success) {

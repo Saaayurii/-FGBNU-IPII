@@ -1,5 +1,6 @@
 "use client";
 import { AdminStats } from '@/components/admin/AdminStats';
+import { DatabaseStatus } from '@/components/DatabaseStatus';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, FileText, Users, Image as ImageIcon, Mail } from 'lucide-react';
@@ -17,6 +18,7 @@ export default function AdminDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <DatabaseStatus />
             <Link href="/admin/news/create">
               <Button>
                 <Plus className="h-4 w-4 mr-2" />

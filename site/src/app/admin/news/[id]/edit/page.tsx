@@ -7,16 +7,9 @@ import { getPostById, updatePost } from "@/actions/posts";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { AdminPost } from "@/types";
 
-interface Post {
-  id: string;
-  title: string;
-  description: string;
-  content: string;
-  category: "NEWS" | "VACANCY" | "ANNOUNCEMENT" | "EVENT";
-  imageUrl?: string;
-  published: boolean;
-}
+type Post = AdminPost;
 
 export default function EditPostPage() {
   const { 0: post, 1: setPost } = useState<Post | null>(null);
@@ -56,12 +49,12 @@ export default function EditPostPage() {
     setIsSaving(true);
     try {
       const result = await updatePost(postId, {
-        title: data.title,
-        description: data.excerpt,
-        content: data.content,
-        category: data.category,
-        imageUrl: data.imageUrl,
-        published: data.published,
+        title: data.title as string,
+        description: data.excerpt as string,
+        content: data.content as string,
+        category: data.category as "NEWS" | "VACANCY" | "ANNOUNCEMENT" | "EVENT",
+        imageUrl: data.imageUrl as string | undefined,
+        published: data.published as boolean,
       });
 
       if (result.success) {

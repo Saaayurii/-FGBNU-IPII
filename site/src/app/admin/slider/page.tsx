@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -17,6 +17,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
   Image as ImageIcon,
   Plus,
   MoreHorizontal,
@@ -26,91 +36,117 @@ import {
   EyeOff,
   MoveUp,
   MoveDown,
+  Upload,
+  Save,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { getAllSliderImagesForAdmin, updateSliderImage, deleteSliderImage, createSliderImage, getSliderStats } from "@/actions/slider";
+import { DatabaseStatus } from "@/components/DatabaseStatus";
+import type { SliderImage } from "@prisma/client";
 
-const mockSlides = [
-  {
-    id: 1,
-    title: "Конференция молодых учёных 2024",
-    description:
-      "Приглашаем принять участие в конференции молодых учёных 2024 года",
-    imageUrl: "/api/placeholder/800/400",
-    isActive: true,
-    order: 1,
-    createdAt: "2024-01-15",
-    link: "/news/conference-2024",
-  },
-  {
-    id: 2,
-    title: "Программа грантов 2024",
-    description:
-      "Актуальная информация о программе грантов для молодых исследователей",
-    imageUrl: "/api/placeholder/800/400",
-    isActive: true,
-    order: 2,
-    createdAt: "2024-01-20",
-    link: "/programs/grants",
-  },
-  {
-    id: 3,
-    title: "Летняя школа 2024",
-    description: "Запись на летнюю школу для молодых учёных и аспирантов",
-    imageUrl: "/api/placeholder/800/400",
-    isActive: false,
-    order: 3,
-    createdAt: "2024-02-01",
-    link: "/events/summer-school",
-  },
-];
 
 export default function SliderPage() {
-  const { 0: slides, 1: setSlides } = useState(mockSlides);
+  const [slides, setSlides] = useState<SliderImage[]>([]);
+  const [stats, setStats] = useState({ totalImages: 0, activeImages: 0, inactiveImages: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+  const [editingSlide, setEditingSlide] = useState<SliderImage | null>(null);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [newSlide, setNewSlide] = useState({ title: '', imageUrl: '', link: '' });
 
-  const activeSlides = slides.filter((slide) => slide.isActive).length;
-  const totalSlides = slides.length;
+  useEffect(() => {
+    loadSlides();
+    loadStats();
+  }, []);
 
-  const handleToggleActive = (id: number) => {
-    setSlides((prev) =>
-      prev.map((slide) =>
-        slide.id === id ? { ...slide, isActive: !slide.isActive } : slide
-      )
-    );
+  const loadSlides = async () => {
+    setIsLoading(true);
+    const slidesData = await getAllSliderImagesForAdmin();
+    setSlides(slidesData);
+    setIsLoading(false);
   };
 
-  const handleDelete = (id: number) => {
-    setSlides((prev) => prev.filter((slide) => slide.id !== id));
+  const loadStats = async () => {
+    const statsData = await getSliderStats();
+    setStats(statsData);
   };
 
-  const handleMoveUp = (id: number) => {
-    setSlides((prev) => {
-      const index = prev.findIndex((slide) => slide.id === id);
-      if (index > 0) {
-        const newSlides = [...prev];
-        [newSlides[index], newSlides[index - 1]] = [
-          newSlides[index - 1],
-          newSlides[index],
-        ];
-        return newSlides.map((slide, idx) => ({ ...slide, order: idx + 1 }));
+  const handleToggleActive = async (id: string, currentActive: boolean) => {
+    const result = await updateSliderImage(id, { active: !currentActive });
+    if (result.success) {
+      await loadSlides();
+      await loadStats();
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm('Вы уверены, что хотите удалить этот слайд?')) {
+      const result = await deleteSliderImage(id);
+      if (result.success) {
+        await loadSlides();
+        await loadStats();
       }
-      return prev;
-    });
+    }
   };
 
-  const handleMoveDown = (id: number) => {
-    setSlides((prev) => {
-      const index = prev.findIndex((slide) => slide.id === id);
-      if (index < prev.length - 1) {
-        const newSlides = [...prev];
-        [newSlides[index], newSlides[index + 1]] = [
-          newSlides[index + 1],
-          newSlides[index],
-        ];
-        return newSlides.map((slide, idx) => ({ ...slide, order: idx + 1 }));
-      }
-      return prev;
+  const handleMoveUp = async (id: string) => {
+    const index = slides.findIndex((slide) => slide.id === id);
+    if (index > 0) {
+      const currentSlide = slides[index];
+      const prevSlide = slides[index - 1];
+      
+      await updateSliderImage(currentSlide.id, { order: prevSlide.order });
+      await updateSliderImage(prevSlide.id, { order: currentSlide.order });
+      
+      await loadSlides();
+    }
+  };
+
+  const handleMoveDown = async (id: string) => {
+    const index = slides.findIndex((slide) => slide.id === id);
+    if (index < slides.length - 1) {
+      const currentSlide = slides[index];
+      const nextSlide = slides[index + 1];
+      
+      await updateSliderImage(currentSlide.id, { order: nextSlide.order });
+      await updateSliderImage(nextSlide.id, { order: currentSlide.order });
+      
+      await loadSlides();
+    }
+  };
+
+  const handleCreateSlide = async () => {
+    if (!newSlide.imageUrl) return;
+    
+    const result = await createSliderImage({
+      title: newSlide.title,
+      imageUrl: newSlide.imageUrl,
+      link: newSlide.link || undefined,
+      order: slides.length + 1,
     });
+    
+    if (result.success) {
+      setNewSlide({ title: '', imageUrl: '', link: '' });
+      setIsCreateDialogOpen(false);
+      await loadSlides();
+      await loadStats();
+    }
+  };
+
+  const handleEditSlide = async () => {
+    if (!editingSlide) return;
+    
+    const result = await updateSliderImage(editingSlide.id, {
+      title: editingSlide.title || undefined,
+      imageUrl: editingSlide.imageUrl,
+      link: editingSlide.link || undefined,
+    });
+    
+    if (result.success) {
+      setEditingSlide(null);
+      await loadSlides();
+    }
   };
 
   return (
@@ -122,12 +158,99 @@ export default function SliderPage() {
             Управление слайдами для главной страницы
           </p>
         </div>
-        <Link href="/admin/slider/create">
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            Добавить слайд
-          </Button>
-        </Link>
+        <div className="flex items-center gap-3">
+          <DatabaseStatus />
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-gradient-to-r from-gray-700 to-slate-600 hover:from-gray-800 hover:to-slate-700">
+                <Plus className="h-4 w-4 mr-2" />
+                Добавить слайд
+              </Button>
+            </DialogTrigger>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Добавить новый слайд</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="title">Заголовок</Label>
+                <Input
+                  id="title"
+                  value={newSlide.title}
+                  onChange={(e) => setNewSlide({ ...newSlide, title: e.target.value })}
+                  placeholder="Введите заголовок слайда"
+                />
+              </div>
+              <div>
+                <Label htmlFor="imageUrl">URL изображения</Label>
+                <div className="space-y-3">
+                  <Input
+                    id="imageUrl"
+                    value={newSlide.imageUrl}
+                    onChange={(e) => setNewSlide({ ...newSlide, imageUrl: e.target.value })}
+                    placeholder="https://example.com/image.jpg или выберите файл ниже"
+                  />
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const url = URL.createObjectURL(file);
+                          setNewSlide({ ...newSlide, imageUrl: url });
+                        }
+                      }}
+                      className="hidden"
+                      id="imageUpload"
+                    />
+                    <label
+                      htmlFor="imageUpload"
+                      className="flex items-center justify-center w-full p-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-colors"
+                    >
+                      <Upload className="w-5 h-5 mr-2 text-gray-400" />
+                      <span className="text-sm text-gray-600">Или загрузите изображение с компьютера</span>
+                    </label>
+                  </div>
+                  <p className="text-xs text-gray-500">Рекомендуемый размер: 1200x600 пикселей</p>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="link">Ссылка (опционально)</Label>
+                <Input
+                  id="link"
+                  value={newSlide.link}
+                  onChange={(e) => setNewSlide({ ...newSlide, link: e.target.value })}
+                  placeholder="/news/example"
+                />
+              </div>
+              {newSlide.imageUrl && (
+                <div className="relative w-full h-40 bg-gray-100 rounded-lg overflow-hidden">
+                  <Image
+                    src={newSlide.imageUrl}
+                    alt="Превью"
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/api/placeholder/400/200";
+                    }}
+                  />
+                </div>
+              )}
+              <div className="flex gap-2 justify-end">
+                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                  <X className="h-4 w-4 mr-2" />
+                  Отмена
+                </Button>
+                <Button onClick={handleCreateSlide} disabled={!newSlide.imageUrl}>
+                  <Save className="h-4 w-4 mr-2" />
+                  Создать слайд
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Статистика */}
@@ -138,7 +261,7 @@ export default function SliderPage() {
             <ImageIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalSlides}</div>
+            <div className="text-2xl font-bold">{stats.totalImages}</div>
             <p className="text-xs text-muted-foreground">
               Общее количество слайдов
             </p>
@@ -153,7 +276,7 @@ export default function SliderPage() {
             <Eye className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{activeSlides}</div>
+            <div className="text-2xl font-bold">{stats.activeImages}</div>
             <p className="text-xs text-muted-foreground">
               Слайды, которые отображаются
             </p>
@@ -168,9 +291,7 @@ export default function SliderPage() {
             <EyeOff className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {totalSlides - activeSlides}
-            </div>
+            <div className="text-2xl font-bold">{stats.inactiveImages}</div>
             <p className="text-xs text-muted-foreground">
               Слайды, которые не отображаются
             </p>
@@ -187,7 +308,12 @@ export default function SliderPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {slides.length === 0 ? (
+          {isLoading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+              <p className="text-gray-500">Загрузка слайдов...</p>
+            </div>
+          ) : slides.length === 0 ? (
             <div className="text-center py-12">
               <ImageIcon className="h-12 w-12 mx-auto mb-4 text-gray-300" />
               <p className="text-lg font-medium mb-2 text-gray-500">
@@ -196,12 +322,10 @@ export default function SliderPage() {
               <p className="text-sm text-gray-400 mb-4">
                 Вы можете добавить слайд для отображения на главной странице
               </p>
-              <Link href="/admin/slider/create">
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Добавить слайд
-                </Button>
-              </Link>
+              <Button onClick={() => setIsCreateDialogOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Добавить слайд
+              </Button>
             </div>
           ) : (
             <div className="space-y-4">
@@ -212,7 +336,7 @@ export default function SliderPage() {
                     <div className="relative w-32 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                       <Image
                         src={slide.imageUrl}
-                        alt={slide.title}
+                        alt={slide.title || "Слайд"}
                         fill
                         className="object-cover"
                         onError={(e) => {
@@ -228,9 +352,6 @@ export default function SliderPage() {
                           <h3 className="text-lg font-semibold text-gray-900 mb-1">
                             {slide.title}
                           </h3>
-                          <p className="text-gray-600 text-sm mb-2 line-clamp-2">
-                            {slide.description}
-                          </p>
                           <div className="flex items-center gap-4 text-sm text-gray-500">
                             <span>Порядок: {slide.order}</span>
                             <span>
@@ -246,14 +367,14 @@ export default function SliderPage() {
                         {/* Управление слайдом */}
                         <div className="flex items-center gap-2 ml-4">
                           <Badge
-                            variant={slide.isActive ? "default" : "secondary"}
+                            variant={slide.active ? "default" : "secondary"}
                             className={
-                              slide.isActive
+                              slide.active
                                 ? "bg-green-100 text-green-800"
                                 : ""
                             }
                           >
-                            {slide.isActive ? "Активен" : "Не активен"}
+                            {slide.active ? "Активен" : "Не активен"}
                           </Badge>
 
                           {/* Кнопки поднять/опустить */}
@@ -263,7 +384,7 @@ export default function SliderPage() {
                               size="sm"
                               className="h-6 w-6 p-0"
                               onClick={() => handleMoveUp(slide.id)}
-                              disabled={index === 0}
+                              disabled={index === 0 || isLoading}
                             >
                               <MoveUp className="h-3 w-3" />
                             </Button>
@@ -272,7 +393,7 @@ export default function SliderPage() {
                               size="sm"
                               className="h-6 w-6 p-0"
                               onClick={() => handleMoveDown(slide.id)}
-                              disabled={index === slides.length - 1}
+                              disabled={index === slides.length - 1 || isLoading}
                             >
                               <MoveDown className="h-3 w-3" />
                             </Button>
@@ -286,16 +407,16 @@ export default function SliderPage() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem asChild>
-                                <Link href={`/admin/slider/${slide.id}/edit`}>
-                                  <Edit className="h-4 w-4 mr-2" />
-                                  Редактировать
-                                </Link>
+                              <DropdownMenuItem
+                                onClick={() => setEditingSlide(slide)}
+                              >
+                                <Edit className="h-4 w-4 mr-2" />
+                                Редактировать
                               </DropdownMenuItem>
                               <DropdownMenuItem
-                                onClick={() => handleToggleActive(slide.id)}
+                                onClick={() => handleToggleActive(slide.id, slide.active)}
                               >
-                                {slide.isActive ? (
+                                {slide.active ? (
                                   <>
                                     <EyeOff className="h-4 w-4 mr-2" />
                                     Деактивировать
@@ -307,12 +428,14 @@ export default function SliderPage() {
                                   </>
                                 )}
                               </DropdownMenuItem>
-                              <DropdownMenuItem asChild>
-                                <Link href={slide.link || "#"} target="_blank">
-                                  <Eye className="h-4 w-4 mr-2" />
-                                  Просмотреть
-                                </Link>
-                              </DropdownMenuItem>
+                              {slide.link && (
+                                <DropdownMenuItem asChild>
+                                  <Link href={slide.link} target="_blank">
+                                    <Eye className="h-4 w-4 mr-2" />
+                                    Просмотреть
+                                  </Link>
+                                </DropdownMenuItem>
+                              )}
                               <DropdownMenuItem
                                 onClick={() => handleDelete(slide.id)}
                                 className="text-red-600"
@@ -354,6 +477,94 @@ export default function SliderPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Диалог редактирования слайда */}
+      <Dialog open={!!editingSlide} onOpenChange={(open) => !open && setEditingSlide(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Редактировать слайд</DialogTitle>
+          </DialogHeader>
+          {editingSlide && (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="edit-title">Заголовок</Label>
+                <Input
+                  id="edit-title"
+                  value={editingSlide.title || ''}
+                  onChange={(e) => setEditingSlide({ ...editingSlide, title: e.target.value || null })}
+                  placeholder="Введите заголовок слайда"
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-imageUrl">URL изображения</Label>
+                <div className="space-y-3">
+                  <Input
+                    id="edit-imageUrl"
+                    value={editingSlide.imageUrl}
+                    onChange={(e) => setEditingSlide({ ...editingSlide, imageUrl: e.target.value })}
+                    placeholder="https://example.com/image.jpg или выберите файл ниже"
+                  />
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const url = URL.createObjectURL(file);
+                          setEditingSlide({ ...editingSlide, imageUrl: url });
+                        }
+                      }}
+                      className="hidden"
+                      id="editImageUpload"
+                    />
+                    <label
+                      htmlFor="editImageUpload"
+                      className="flex items-center justify-center w-full p-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-colors"
+                    >
+                      <Upload className="w-5 h-5 mr-2 text-gray-400" />
+                      <span className="text-sm text-gray-600">Или загрузите новое изображение</span>
+                    </label>
+                  </div>
+                  <p className="text-xs text-gray-500">Рекомендуемый размер: 1200x600 пикселей</p>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="edit-link">Ссылка (опционально)</Label>
+                <Input
+                  id="edit-link"
+                  value={editingSlide.link || ''}
+                  onChange={(e) => setEditingSlide({ ...editingSlide, link: e.target.value })}
+                  placeholder="/news/example"
+                />
+              </div>
+              {editingSlide.imageUrl && (
+                <div className="relative w-full h-40 bg-gray-100 rounded-lg overflow-hidden">
+                  <Image
+                    src={editingSlide.imageUrl}
+                    alt="Превью"
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/api/placeholder/400/200";
+                    }}
+                  />
+                </div>
+              )}
+              <div className="flex gap-2 justify-end">
+                <Button variant="outline" onClick={() => setEditingSlide(null)}>
+                  <X className="h-4 w-4 mr-2" />
+                  Отмена
+                </Button>
+                <Button onClick={handleEditSlide}>
+                  <Save className="h-4 w-4 mr-2" />
+                  Сохранить изменения
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

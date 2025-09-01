@@ -33,7 +33,8 @@ export function Pagination({
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   };
 
-  if (totalPages <= 1) return null;
+  // Показываем пагинацию всегда для консистентности UI
+  // if (totalPages <= 1) return null;
 
   return (
     <div className="flex justify-center mt-8">

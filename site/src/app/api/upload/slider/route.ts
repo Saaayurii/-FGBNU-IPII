@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     // @>25@O5< 0CB5=B8D8:0F8N ?>;L7>20B5;O
     const session = await getServerSession(authOptions);
     
-    if (!session || session.user.role !== 'ADMIN') {
+    if (!session || !session.user || (session.user as any).role !== 'ADMIN') {
       return NextResponse.json(
         { success: false, error: '5B 4>ABC?0' },
         { status: 401 }

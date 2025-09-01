@@ -14,33 +14,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, FileText, Eye, PenTool, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
-
-interface Post {
-  id: string;
-  title: string;
-  description: string;
-  excerpt: string;
-  category: "NEWS" | "VACANCY" | "ANNOUNCEMENT" | "EVENT";
-  imageUrl?: string;
-  published: boolean;
-  views: number;
-  createdAt: string;
-  updatedAt: string;
-  author?: {
-    name: string | null;
-    email: string;
-  } | null;
-}
-
-interface PostsData {
-  posts: Post[];
-  pagination: {
-    page: number;
-    limit: number;
-    totalPages: number;
-    totalCount: number;
-  };
-}
+import { PostsData } from "@/types";
 
 export default function NewsPage() {
   const { 0: postsData, 1: setPostsData } = useState<PostsData | null>(null);
@@ -133,9 +107,9 @@ export default function NewsPage() {
     postsData?.posts.map((post) => ({
       id: post.id,
       title: post.title,
-      excerpt: post.description || post.excerpt || "",
+      excerpt: post.description || "",
       category: post.category as "NEWS" | "VACANCY" | "ANNOUNCEMENT" | "EVENT",
-      imageUrl: post.imageUrl,
+      imageUrl: post.imageUrl || undefined,
       published: post.published,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,

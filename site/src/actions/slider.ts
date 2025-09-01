@@ -5,16 +5,31 @@ import { SliderImage } from "@prisma/client";
 
 export async function getSliderImages(): Promise<SliderImage[]> {
   try {
-    const images = await prisma.sliderImage.findMany({
-      where: {
-        active: true
-      },
-      orderBy: {
-        order: 'asc'
+    // Добавляем повторные попытки подключения
+    let retries = 3;
+    while (retries > 0) {
+      try {
+        const images = await prisma.sliderImage.findMany({
+          where: {
+            active: true
+          },
+          orderBy: {
+            order: 'asc'
+          }
+        });
+        
+        return images;
+      } catch (dbError: any) {
+        retries--;
+        if (retries === 0 || !dbError.message?.includes("Can't reach database")) {
+          throw dbError;
+        }
+        console.warn(`Database connection failed, retrying... (${retries} attempts left)`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
       }
-    });
+    }
     
-    return images;
+    return [];
   } catch (error) {
     console.error("Error fetching slider images:", error);
     return [];

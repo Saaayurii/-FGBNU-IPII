@@ -2,12 +2,12 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/ui/Footer";
 import { getPostBySlug } from '@/actions/posts';
 import { notFound } from 'next/navigation';
-import { BackButton } from '@/components/news/BackButton'
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, User, Newspaper } from "lucide-react";
 import Image from "next/image";
+import { BackButton } from "@/components/news/BackButton";
 
 export default async function NewsDetailPage({
   params,
@@ -48,7 +48,7 @@ export default async function NewsDetailPage({
             </div>
             <div className="flex items-center">
               <User className="w-4 h-4 mr-2" />
-              <span>{newsItem.author.name}</span>
+              <span>{newsItem.author?.name || 'Анонимный автор'}</span>
             </div>
           </div>
         </div>
