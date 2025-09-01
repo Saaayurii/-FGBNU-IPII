@@ -6,43 +6,66 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink } from "lucide-react";
 import { PostWithAuthor } from "@/types";
-import { fetchNews } from "@/types/api";
+import { getPosts } from "@/actions/posts";
+import { Category } from "@prisma/client";
 import Link from "next/link";
 
-interface ProgramsProps {
-  vacancies?: PostWithAuthor[];
-  searchParams?: {
-    // Добавляем searchParams в props
+export default async function VacanciesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
     page?: string;
     from?: string;
     to?: string;
     category?: string;
-  };
-}
+  }>;
+}) {
+  const params = await searchParams;
+  const currentPage = Number(params?.page) || 1;
+  
+  // Get vacancy posts from database
+  const vacancyPosts = await getPosts(Category.VACANCY);
+  
+  console.log('Vacancy posts fetched:', vacancyPosts.length, vacancyPosts);
+  
+  // Apply date filters if provided
+  let filteredPosts = vacancyPosts;
+  if (params?.from) {
+    const fromDate = new Date(params.from);
+    filteredPosts = filteredPosts.filter(post => new Date(post.createdAt) >= fromDate);
+  }
+  if (params?.to) {
+    const toDate = new Date(params.to);
+    filteredPosts = filteredPosts.filter(post => new Date(post.createdAt) <= toDate);
+  }
+  
+  // Pagination
+  const postsPerPage = 6;
+  const totalPosts = filteredPosts.length;
+  const totalPages = Math.ceil(totalPosts / postsPerPage);
+  const startIndex = (currentPage - 1) * postsPerPage;
+  const publishedVacancies = filteredPosts.slice(startIndex, startIndex + postsPerPage);
 
-export default async function VacanciesPage({
-  vacancies = [],
-  searchParams,
-}: ProgramsProps) {
-  // Фильтруем только опубликованные вакансии
-  const publishedVacancies = vacancies
-    .filter((vacancy) => vacancy.published && vacancy.category === "VACANCY")
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )
-    .slice(0, 6);
+  // Convert to display format
+  const displayVacancies = publishedVacancies.map(vacancy => ({
+    id: vacancy.id,
+    title: vacancy.title,
+    description: vacancy.description,
+    content: vacancy.content,
+    createdAt: vacancy.createdAt,
+    category: vacancy.category,
+    imageUrl: vacancy.imageUrl,
+    author: vacancy.author,
+    published: vacancy.published,
+    slug: vacancy.slug,
+    positions: "Уточнить в HR отделе",
+    employment: "Полная занятость", 
+    contract: "Согласно трудовому законодательству",
+    department: "Лаборатория интеллектуальных систем и анализа данных",
+  }));
 
-  const currentPage = Number(searchParams?.page) || 1;
-  const filters = {
-    from: searchParams?.from,
-    to: searchParams?.to,
-    category: searchParams?.category,
-  };
-  const { totalPages } = await fetchNews(currentPage, 5, filters);
-
-  // Fallback данные если нет вакансий
-  const fallbackVacancies = [
+  // Fallback данные если нет вакансий  
+  const fallbackVacancies = displayVacancies.length > 0 ? [] : [
     {
       id: "1",
       title: "Младший научный сотрудник",
@@ -99,10 +122,9 @@ export default async function VacanciesPage({
     },
   ];
 
-  const displayVacancies =
-    publishedVacancies.length > 0
-      ? publishedVacancies
-      : (fallbackVacancies as any[]);
+  const finalVacancies = displayVacancies.length > 0 ? displayVacancies : (fallbackVacancies as any[]);
+  
+  console.log('Final vacancies to display:', finalVacancies.length, finalVacancies);
 
   const extractFirstSentence = (content: string, maxLength: number = 150) => {
     // Удаляем HTML теги и берем первые предложения
@@ -153,7 +175,7 @@ export default async function VacanciesPage({
             <div className="container mx-auto">
               {/* Адаптивная сетка: 1 колонка на mobile, 2 на tablet, 3 на desktop */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {displayVacancies.map((vacancy) => {
+                {finalVacancies.map((vacancy) => {
                   const status = getStatusBadge(new Date(vacancy.createdAt));
 
                   return (
@@ -207,7 +229,7 @@ export default async function VacanciesPage({
               </div>
             </div>
 
-            {displayVacancies.length === 0 && (
+            {finalVacancies.length === 0 && (
               <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
                   В настоящее время открытых вакансий нет. Следите за

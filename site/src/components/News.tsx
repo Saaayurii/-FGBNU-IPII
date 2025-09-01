@@ -13,15 +13,18 @@ import Link from "next/link";
 interface NewsProps {
   onViewAllNews?: () => void;
   posts?: PostWithAuthor[];
-  onReadNews?: (post: PostWithAuthor) => void;
 }
 
-export function News({ onViewAllNews, posts = [], onReadNews }: NewsProps) {
-  // Фильтруем только опубликованные новости и берем последние 6
+export function News({ onViewAllNews, posts = [] }: NewsProps) {
+  console.log("News component received posts:", posts.length, posts);
+  
+  // Фильтруем только опубликованные новости (исключаем вакансии) и берем последние 6
   const publishedPosts = posts
     .filter(post => post.published && post.category === 'NEWS')
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 6);
+    
+  console.log("Published posts after filtering:", publishedPosts.length, publishedPosts);
 
   // Fallback данные если нет постов
   const fallbackNews = [
@@ -86,45 +89,47 @@ export function News({ onViewAllNews, posts = [], onReadNews }: NewsProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {displayPosts.map((post) => (
-            <Card key={post.id} className="group block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col py-0 pb-4 cursor-pointer">
-              {post.imageUrl ? (
-                <div className="relative aspect-video overflow-hidden bg-gray-100">
-                  <Image
-                    src={post.imageUrl}
-                    alt={post.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    width={500}
-                    height={281}
-                  />
-                  <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
-                    {post.category}
+            <Link key={post.id} href={`/news/${post.slug}`}>
+              <Card className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col py-0 pb-4 cursor-pointer">
+                {post.imageUrl ? (
+                  <div className="relative aspect-video overflow-hidden bg-gray-100">
+                    <Image
+                      src={post.imageUrl}
+                      alt={post.title}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      width={500}
+                      height={281}
+                    />
+                    <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                      {post.category}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-[100%] h-[200px] bg-muted flex items-center justify-center">
+                    <span className="text-muted-foreground">Нет изображения</span>
+                  </div>
+                )}
+
+                <div className="px-4 pb-4">
+                  <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors dark:text-black">
+                    {post.title}
+                  </h3>
+
+                  <time className="block text-sm text-gray-500 mb-3">
+                    {format(new Date(post.createdAt), "d MMMM yyyy", { locale: ru })}
+                  </time>
+
+                  <p className="text-gray-600 line-clamp-2">{post.description}</p>
+
+                  <div className="mt-4 flex items-center text-blue-500 font-medium text-sm group-hover:underline">
+                    Читать далее
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
                   </div>
                 </div>
-              ) : (
-                <div className="w-[100%] h-[200px] bg-muted flex items-center justify-center">
-                  <span className="text-muted-foreground">Нет изображения</span>
-                </div>
-              )}
-
-              <div className="px-4 pb-4">
-                <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors dark:text-black">
-                  {post.title}
-                </h3>
-
-                <time className="block text-sm text-gray-500 mb-3">
-                  {format(new Date(post.createdAt), "d MMMM yyyy", { locale: ru })}
-                </time>
-
-                <p className="text-gray-600 line-clamp-2">{post.description}</p>
-
-                <div className="mt-4 flex items-center text-blue-500 font-medium text-sm group-hover:underline" onClick={() => onReadNews?.(post)}>
-                  Читать далее
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
-            </Card>
+              </Card>
+            </Link>
           ))}
         </div>
 

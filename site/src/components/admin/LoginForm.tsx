@@ -14,12 +14,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Lock, ArrowLeft } from "lucide-react";
+import { Loader2, Lock, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 
 export var LoginForm = () => {
   const { 0: email, 1: setEmail } = useState("");
   const { 0: password, 1: setPassword } = useState("");
+  const { 0: showPassword, 1: setShowPassword } = useState(false);
   const { 0: isLoading, 1: setIsLoading } = useState(false);
   const { 0: error, 1: setError } = useState("");
   const { 0: mounted, 1: setMounted } = useState(false);
@@ -35,19 +36,30 @@ export var LoginForm = () => {
     setError("");
 
     try {
+      console.log("Attempting sign in with:", email);
+      
       const result = await signIn("credentials", {
         email,
         password,
         redirect: false,
       });
 
+      console.log("Sign in result:", result);
+
       if (result?.error) {
+        console.log("Sign in error:", result.error);
         setError("Неверный email или пароль");
       } else if (result?.ok) {
-        router.push("/admin");
-        router.refresh();
+        console.log("Sign in successful, redirecting...");
+        // Force redirect
+        window.location.href = "/admin";
+        return;
+      } else {
+        console.log("Unexpected result:", result);
+        setError("Произошла ошибка при входе");
       }
     } catch (error) {
+      console.error("Sign in exception:", error);
       setError("Произошла ошибка при входе");
     } finally {
       setIsLoading(false);
@@ -111,15 +123,30 @@ export var LoginForm = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="password">Пароль</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    disabled={isLoading}
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => setShowPassword(!showPassword)}
+                    disabled={isLoading}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               <div className="flex justify-between w-full pt-3">

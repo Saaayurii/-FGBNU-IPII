@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { Category } from "@prisma/client";
 import { PostWithAuthor } from "@/types";
 import { revalidatePath } from "next/cache";
+import { createHash } from 'crypto';
 
 export async function getPosts(category?: Category): Promise<PostWithAuthor[]> {
   try {
@@ -106,24 +107,24 @@ async function generateUniqueSlug(title: string, excludeId?: string): Promise<st
     .replace(/[\s_-]+/g, '-')
     .replace(/^-+|-+$/g, '');
   
-  let slug = baseSlug;
-  let counter = 1;
+  // Создаем хэш из заголовка для уникальности
+  const hash = createHash('md5').update(title + Date.now().toString()).digest('hex').substring(0, 8);
+  const slug = `${baseSlug}-${hash}`;
   
-  while (true) {
-    const existing = await prisma.post.findUnique({
-      where: { 
-        slug,
-        ...(excludeId && { NOT: { id: excludeId } })
-      }
-    });
-    
-    if (!existing) {
-      return slug;
+  // Проверяем уникальность
+  const existing = await prisma.post.findUnique({
+    where: { 
+      slug,
+      ...(excludeId && { NOT: { id: excludeId } })
     }
-    
-    slug = `${baseSlug}-${counter}`;
-    counter++;
+  });
+  
+  if (!existing) {
+    return slug;
   }
+  
+  // Если вдруг коллизия, добавляем timestamp
+  return `${baseSlug}-${hash}-${Date.now()}`;
 }
 
 export async function createPost(data: {
@@ -135,10 +136,30 @@ export async function createPost(data: {
   published?: boolean;
   featured?: boolean;
   authorId: string;
+  // Поля для вакансий
+  location?: string;
+  employmentType?: string;
+  salary?: string;
+  requirements?: string;
 }) {
   try {
+    console.log("Creating post with data:", data);
+    
+    // Check if user exists
+    const userExists = await prisma.user.findUnique({
+      where: { id: data.authorId }
+    });
+    
+    console.log("User exists check:", userExists);
+    
+    if (!userExists) {
+      console.error("User not found with ID:", data.authorId);
+      return { success: false, error: "User not found" };
+    }
+    
     // Generate unique slug from title
     const slug = await generateUniqueSlug(data.title);
+    console.log("Generated slug:", slug);
 
     const post = await prisma.post.create({
       data: {
@@ -174,6 +195,11 @@ export async function updatePost(id: string, data: {
   imageUrl?: string;
   published?: boolean;
   featured?: boolean;
+  // Поля для вакансий
+  location?: string;
+  employmentType?: string;
+  salary?: string;
+  requirements?: string;
 }) {
   try {
     const updateData: Record<string, unknown> = { ...data };

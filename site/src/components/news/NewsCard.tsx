@@ -6,7 +6,7 @@ export default function NewsCard({ item }: { item: NewsItem }) {
   return (
     <Link 
       href={`/news/${item.slug}`}
-      className="group block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col"
+      className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col"
     >
       {item.image && (
         <div className="relative aspect-video overflow-hidden bg-gray-100">

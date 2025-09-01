@@ -13,6 +13,9 @@ export default function CreatePostPage() {
   const { data: session } = useSession();
 
   const handleSubmit = async (data: Record<string, unknown>) => {
+    console.log("Session data:", session);
+    console.log("User ID:", session?.user?.id);
+    
     if (!session?.user?.id) {
       toast.error("Необходимо войти в систему");
       return;

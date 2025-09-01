@@ -11,7 +11,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, Loader2, Save } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { adminApi } from "@/lib/core";
+import { createPost } from "@/actions/posts";
+import { Category } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import {
   Select,
   SelectContent,
@@ -21,6 +23,7 @@ import {
 } from "@/components/ui/select";
 
 export default function CreateVacancyPage() {
+  const { data: session } = useSession();
   const { 0: formData, 1: setFormData } = useState({
     title: "",
     description: "",
@@ -58,14 +61,40 @@ export default function CreateVacancyPage() {
       return;
     }
 
+    if (!session?.user) {
+      setError("Пользователь не авторизован");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const result = await adminApi.vacancies.create(formData);
+      // Create content from all fields
+      const content = `
+        <h3>Местоположение:</h3>
+        <p>${formData.location}</p>
+        
+        <h3>Тип занятости:</h3>
+        <p>${formData.employment}</p>
+        
+        ${formData.salary ? `<h3>Зарплата:</h3><p>${formData.salary}</p>` : ''}
+        
+        ${formData.requirements ? `<h3>Требования:</h3><p>${formData.requirements}</p>` : ''}
+      `;
+
+      const result = await createPost({
+        title: formData.title,
+        description: formData.description,
+        content: content,
+        category: Category.VACANCY,
+        published: formData.isActive,
+        featured: false,
+        authorId: session.user.id || ""
+      });
 
       if (result.success) {
         toast.success("Вакансия успешно создана!");
-        router.push("/admin/vacancies");
+        router.push("/admin/news"); // Redirect to news admin since vacancies are posts
       } else {
         setError(result.error || "Не удалось создать вакансию");
       }

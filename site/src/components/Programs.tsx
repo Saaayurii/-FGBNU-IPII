@@ -18,10 +18,9 @@ import { ru } from "date-fns/locale";
 
 interface ProgramsProps {
   vacancies?: PostWithAuthor[];
-  onViewVacancy?: (vacancy: PostWithAuthor) => void;
 }
 
-export function Programs({ vacancies = [], onViewVacancy }: ProgramsProps) {
+export function Programs({ vacancies = [] }: ProgramsProps) {
   // Фильтруем только опубликованные вакансии
   const publishedVacancies = vacancies
     .filter((vacancy) => vacancy.published && vacancy.category === "VACANCY")
@@ -186,14 +185,15 @@ export function Programs({ vacancies = [], onViewVacancy }: ProgramsProps) {
 
                   {/* Кнопка "Подробнее" */}
                   <div className="pt-4 border-t mt-auto">
-                    <Button
-                      variant="outline"
-                      className="w-full mt-4 cursor-pointer"
-                      onClick={() => onViewVacancy?.(vacancy)}
-                    >
-                      Подробнее
-                      <ExternalLink className="h-4 w-4 ml-2" />
-                    </Button>
+                    <Link href={`/vacancies/${vacancy.slug}`}>
+                      <Button
+                        variant="outline"
+                        className="w-full mt-4 cursor-pointer"
+                      >
+                        Подробнее
+                        <ExternalLink className="h-4 w-4 ml-2" />
+                      </Button>
+                    </Link>
                   </div>
                 </Card>
               );

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from '@/components/ui/dialog';
 import { X, Eye, Download } from 'lucide-react';
 import { apiCore } from '@/lib/core';
 
@@ -106,6 +106,7 @@ export function ImagePreview({
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-4xl">
+              <DialogTitle>Просмотр изображения</DialogTitle>
               <div className="relative w-full h-[70vh]">
                 <Image
                   src={src}

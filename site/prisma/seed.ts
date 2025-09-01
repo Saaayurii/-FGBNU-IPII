@@ -3,12 +3,38 @@ import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
+import { createHash } from 'crypto';
+
+async function generateUniqueSlug(title: string): Promise<string> {
+  const baseSlug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  
+  // Создаем хэш из заголовка для уникальности
+  const hash = createHash('md5').update(title + Date.now().toString()).digest('hex').substring(0, 8);
+  const slug = `${baseSlug}-${hash}`;
+  
+  // Проверяем уникальность
+  const existing = await prisma.post.findUnique({
+    where: { slug }
+  });
+  
+  if (!existing) {
+    return slug;
+  }
+  
+  // Если вдруг коллизия, добавляем timestamp
+  return `${baseSlug}-${hash}-${Date.now()}`;
+}
+
 async function main() {
   console.log('🌱 Начинаем заполнение базы данных...')
 
   // Создание админа
   const adminPassword = process.env.ADMIN_PASSWORD || 'admin123456'
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com'
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@yourdomain.com'
   const hashedPassword = await bcrypt.hash(adminPassword, 12)
   
   const admin = await prisma.user.upsert({
@@ -27,28 +53,25 @@ async function main() {
   // Создание тестовых новостей
   const news = [
     {
-      title: 'Важные новости',
-      slug: 'vazhnye-novosti-kompanii',
+      title: 'Важные новости компании',
       description: 'Краткое описание важных новостей нашего института',
-      content: 'Полный текст новости с подробной информацией о важных событиях в компании.',
+      content: 'Полный текст новости с подробной информацией о важных событиях в компании. Мы рады сообщить о новых достижениях и планах развития нашего института.',
       category: Category.NEWS,
       published: true,
       featured: true,
     },
     {
-      title: 'Открыта новая вакансия разработчика',
-      slug: 'otkryta-novaya-vakansiya-razrabotchika',
-      description: 'Ищем талантливого разработчика в нашу команду',
-      content: 'Подробное описание вакансии разработчика с требованиями и условиями работы.',
+      title: 'Открыта вакансия младшего научного сотрудника',
+      description: 'Ищем талантливого исследователя в нашу команду',
+      content: 'Подробное описание вакансии младшего научного сотрудника. Требования: высшее образование, опыт исследований, знание Python. Мы предлагаем интересные проекты и возможности для профессионального роста.',
       category: Category.VACANCY,
       published: true,
       featured: false,
     },
     {
-      title: 'Объявление о корпоративном мероприятии',
-      slug: 'obyavlenie-o-korporativnom-meropriyatii',
-      description: 'Приглашаем всех сотрудников на корпоративное мероприятие',
-      content: 'Информация о предстоящем корпоративном мероприятии и программе.',
+      title: 'Объявление о научной конференции',
+      description: 'Приглашаем всех сотрудников на научную конференцию',
+      content: 'Информация о предстоящей научной конференции и программе. Будут представлены последние исследования в области искусственного интеллекта и машинного обучения.',
       category: Category.ANNOUNCEMENT,
       published: true,
       featured: false,
@@ -56,11 +79,11 @@ async function main() {
   ]
 
   for (const newsItem of news) {
-    await prisma.post.upsert({
-      where: { slug: newsItem.slug },
-      update: {},
-      create: {
+    const slug = await generateUniqueSlug(newsItem.title);
+    await prisma.post.create({
+      data: {
         ...newsItem,
+        slug,
         authorId: admin.id,
         publishedAt: new Date(),
       },

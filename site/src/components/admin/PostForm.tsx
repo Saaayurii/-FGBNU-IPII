@@ -35,7 +35,12 @@ export function PostForm({ initialData, onSubmit, isLoading = false }: PostFormP
     excerpt: initialData?.excerpt || '',
     category: initialData?.category || 'NEWS' as const,
     imageUrl: initialData?.imageUrl || '',
-    published: initialData?.published || false
+    published: initialData?.published || false,
+    // Поля для вакансий
+    location: (initialData as any)?.location || '',
+    employmentType: (initialData as any)?.employmentType || '',
+    salary: (initialData as any)?.salary || '',
+    requirements: (initialData as any)?.requirements || ''
   });
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -178,6 +183,65 @@ export function PostForm({ initialData, onSubmit, isLoading = false }: PostFormP
               </div>
             </CardContent>
           </Card>
+
+          {/* Поля для вакансий */}
+          {formData.category === 'VACANCY' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Детали вакансии</CardTitle>
+                <CardDescription>
+                  Дополнительная информация для вакансии
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="location">Местоположение</Label>
+                  <Input
+                    id="location"
+                    value={formData.location}
+                    onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                    placeholder="Например: Донецк, Москва"
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="employmentType">Тип занятости</Label>
+                  <Input
+                    id="employmentType"
+                    value={formData.employmentType}
+                    onChange={(e) => setFormData(prev => ({ ...prev, employmentType: e.target.value }))}
+                    placeholder="Например: Полная занятость, Частичная занятость"
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="salary">Зарплата</Label>
+                  <Input
+                    id="salary"
+                    value={formData.salary}
+                    onChange={(e) => setFormData(prev => ({ ...prev, salary: e.target.value }))}
+                    placeholder="Например: 50000-70000 руб."
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="requirements">Требования</Label>
+                  <textarea
+                    id="requirements"
+                    value={formData.requirements}
+                    onChange={(e) => setFormData(prev => ({ ...prev, requirements: e.target.value }))}
+                    placeholder="Опишите требования к кандидату..."
+                    disabled={isLoading}
+                    rows={4}
+                    className="w-full px-3 py-2 border border-input rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           <Card>
             <CardHeader>

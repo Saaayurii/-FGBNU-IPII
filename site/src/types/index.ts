@@ -25,6 +25,11 @@ export type CreatePostData = {
   imageUrl?: string
   published?: boolean
   featured?: boolean
+  // Поля для вакансий
+  location?: string
+  employmentType?: string
+  salary?: string
+  requirements?: string
 }
 
 export type UpdatePostData = Partial<CreatePostData> & {
