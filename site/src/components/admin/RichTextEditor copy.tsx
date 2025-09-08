@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef, useState, useEffect } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { 
@@ -11,6 +11,7 @@ import {
   ListOrdered, 
   Link, 
   Quote,
+  Type,
   AlignLeft,
   AlignCenter,
   AlignRight
@@ -33,51 +34,23 @@ export function RichTextEditor({
 }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const [isFocused, setIsFocused] = useState(false);
-  const lastHtmlRef = useRef(value);
-
-  // Синхронизируем значение извне с редактором
-  useEffect(() => {
-    if (editorRef.current && value !== lastHtmlRef.current) {
-      editorRef.current.innerHTML = value;
-      lastHtmlRef.current = value;
-      
-      // Сохраняем позицию курсора
-      const selection = window.getSelection();
-      if (selection && selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        range.collapse(true); // Перемещаем курсор в конец
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-    }
-  }, [value]);
 
   const handleCommand = useCallback((command: string, value?: string) => {
     document.execCommand(command, false, value);
     editorRef.current?.focus();
-    updateValue();
   }, []);
 
-  const updateValue = useCallback(() => {
+  const handleInput = useCallback(() => {
     if (editorRef.current) {
-      const newValue = editorRef.current.innerHTML;
-      if (newValue !== lastHtmlRef.current) {
-        lastHtmlRef.current = newValue;
-        onChange(newValue);
-      }
+      onChange(editorRef.current.innerHTML);
     }
   }, [onChange]);
-
-  const handleInput = useCallback(() => {
-    updateValue();
-  }, [updateValue]);
 
   const handlePaste = useCallback((e: React.ClipboardEvent) => {
     e.preventDefault();
     const text = e.clipboardData.getData('text/plain');
     document.execCommand('insertText', false, text);
-    updateValue();
-  }, [updateValue]);
+  }, []);
 
   const insertLink = useCallback(() => {
     const url = prompt('Введите URL:');
@@ -167,6 +140,7 @@ export function RichTextEditor({
                      [&_strong]:font-bold
                      [&_em]:italic
                      [&_u]:underline"
+          dangerouslySetInnerHTML={{ __html: value }}
           onInput={handleInput}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
