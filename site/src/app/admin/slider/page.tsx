@@ -54,11 +54,22 @@ export default function SliderPage() {
   const [editingSlide, setEditingSlide] = useState<SliderImage | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newSlide, setNewSlide] = useState({ title: '', imageUrl: '', link: '' });
+  const [isUploading, setIsUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
 
   useEffect(() => {
     loadSlides();
     loadStats();
   }, []);
+
+  useEffect(() => {
+    // Cleanup function to revoke blob URLs
+    return () => {
+      if (previewUrl && previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const loadSlides = async () => {
     setIsLoading(true);
@@ -116,6 +127,37 @@ export default function SliderPage() {
     }
   };
 
+  const handleFileUpload = async (file: File) => {
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload/slider', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        const uploadedUrl = `/api/images/${result.data.fileName}`;
+        setNewSlide({ ...newSlide, imageUrl: uploadedUrl });
+        setPreviewUrl(uploadedUrl);
+        
+        // Clean up any existing preview URL
+        if (previewUrl && previewUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(previewUrl);
+        }
+      } else {
+        console.error('Upload failed:', result.error);
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleCreateSlide = async () => {
     if (!newSlide.imageUrl) return;
     
@@ -128,6 +170,7 @@ export default function SliderPage() {
     
     if (result.success) {
       setNewSlide({ title: '', imageUrl: '', link: '' });
+      setPreviewUrl('');
       setIsCreateDialogOpen(false);
       await loadSlides();
       await loadStats();
@@ -197,8 +240,10 @@ export default function SliderPage() {
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          const url = URL.createObjectURL(file);
-                          setNewSlide({ ...newSlide, imageUrl: url });
+                          // Create temporary preview for immediate display
+                          const tempUrl = URL.createObjectURL(file);
+                          setPreviewUrl(tempUrl);
+                          handleFileUpload(file);
                         }
                       }}
                       className="hidden"
@@ -224,10 +269,15 @@ export default function SliderPage() {
                   placeholder="/news/example"
                 />
               </div>
-              {newSlide.imageUrl && (
+              {(previewUrl || newSlide.imageUrl) && (
                 <div className="relative w-full h-40 bg-gray-100 rounded-lg overflow-hidden">
+                  {isUploading && (
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+                      <div className="text-white">Загрузка...</div>
+                    </div>
+                  )}
                   <Image
-                    src={newSlide.imageUrl}
+                    src={previewUrl || newSlide.imageUrl}
                     alt="Превью"
                     fill
                     className="object-cover"
@@ -508,11 +558,29 @@ export default function SliderPage() {
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const file = e.target.files?.[0];
-                        if (file) {
-                          const url = URL.createObjectURL(file);
-                          setEditingSlide({ ...editingSlide, imageUrl: url });
+                        if (file && editingSlide) {
+                          setIsUploading(true);
+                          try {
+                            const formData = new FormData();
+                            formData.append('file', file);
+
+                            const response = await fetch('/api/upload/slider', {
+                              method: 'POST',
+                              body: formData,
+                            });
+
+                            const result = await response.json();
+                            if (result.success) {
+                              const uploadedUrl = `/api/images/${result.data.fileName}`;
+                              setEditingSlide({ ...editingSlide, imageUrl: uploadedUrl });
+                            }
+                          } catch (error) {
+                            console.error('Upload error:', error);
+                          } finally {
+                            setIsUploading(false);
+                          }
                         }
                       }}
                       className="hidden"
